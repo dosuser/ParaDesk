@@ -402,6 +402,7 @@ namespace ParaDesk.Diagnostics
                           " (" + SystemStatus.DescribeTransportError(r.TransportStatus) + ")");
             sb.AppendLine("TransportPipe        = " + r.TransportPipe);
             sb.AppendLine("TransportReady       = " + r.TransportReady);
+            sb.AppendLine("TransportProbed      = " + r.TransportProbed);
             sb.AppendLine("ReadyToStart         = " + r.ReadyToStart);
             sb.AppendLine("Blocked              = " + r.Blocked);
             sb.AppendLine("NeedsSetup           = " + r.NeedsSetup);
@@ -496,6 +497,8 @@ namespace ParaDesk.Diagnostics
             sb.AppendLine("AppVersion       = " + AppInfo.Version);
             sb.AppendLine("AppPath          = " + SafeString(delegate { return AppInfo.ExecutablePath; }));
             sb.AppendLine("DataDir          = " + AppInfo.DataDir);
+            sb.AppendLine("ActualDataDir    = " + AppInfo.ActualDataDir);
+            sb.AppendLine("BuildId          = " + AppInfo.BuildId);
             sb.AppendLine("LogDir           = " + Log.Dir);
             sb.AppendLine("SessionId        = " + SafeString(delegate { return Process.GetCurrentProcess().SessionId.ToString(); }));
             sb.AppendLine("TimeZone         = " + SafeString(delegate { return TimeZoneInfo.Local.Id; }));

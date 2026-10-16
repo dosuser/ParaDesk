@@ -456,7 +456,7 @@ namespace ParaDesk.Core
             Item(sb, "--status [--json]",
                 L.T("查看当前状态。--json 输出机器可读的状态快照；没有在运行时退出码为 3。"));
             Item(sb, L.T("--start [--profile <方案名>] [--wait]"),
-                L.T("启动或重新接入分身桌面。--profile 先切换方案；--wait 等到连上或失败（最多 100 秒）。环境未就绪返回 2，不会弹出管理员授权。"));
+                L.T("启动或重新接入。--profile 先切换方案；--wait 等到 Windows 登录完成或失败（最多 100 秒）。环境未就绪返回 2，不请求提权。"));
             Item(sb, "--detach", L.T("收起画面，子会话继续运行。"));
             Item(sb, "--close", L.T("注销子会话（结束里面的所有程序），不弹确认框。"));
             Item(sb, "--view-only on|off|toggle", L.T("仅查看：禁止用键鼠操作分身桌面。"));

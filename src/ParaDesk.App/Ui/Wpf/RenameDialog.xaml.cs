@@ -12,6 +12,23 @@ namespace ParaDesk.Shell
         public string ResultName { get; private set; }
 
         private readonly string _device;
+        private readonly Func<string, bool> _profileNameTaken;
+
+        public RenameDialog(string title, string initialName, Func<string, bool> nameTaken)
+        {
+            InitializeComponent();
+            _profileNameTaken = nameTaken;
+            Title = L.T(title);
+            DialogTitle.Title = Title;
+            TbSubject.Text = L.T("方案名称");
+            TbName.MaxLength = 60;
+            TbName.Text = initialName ?? "";
+            TbName.PlaceholderText = L.T("方案名称");
+            System.Windows.Automation.AutomationProperties.SetName(TbName, L.T("方案名称"));
+            NameHint.Text = L.T("最多 60 个字符，名称不能重复。");
+            Loaded += delegate { FocusName(); };
+            Localizer.Translate(this);
+        }
 
         public RenameDialog(MonitorInfo m)
         {
@@ -49,6 +66,20 @@ namespace ParaDesk.Shell
         private void OnOk(object sender, RoutedEventArgs e)
         {
             string name = (TbName.Text ?? "").Trim();
+
+            if (_profileNameTaken != null)
+            {
+                if (name.Length == 0 || _profileNameTaken(name))
+                {
+                    MessageBox.Show(this, L.T("请输入未使用的方案名称。"), AppInfo.ProductName,
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    FocusName();
+                    return;
+                }
+                ResultName = name;
+                DialogResult = true;
+                return;
+            }
 
             if (name.Length > 0 && IsTakenByOther(name))
             {

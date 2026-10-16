@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="运行日志"
-    Width="900" Height="620"
+    Width="900" Height="620" MinWidth="700" MinHeight="420"
     WindowStartupLocation="CenterOwner"
     WindowBackdropType="Mica"
     ExtendsContentIntoTitleBar="True"
@@ -28,16 +28,16 @@
 
         <Grid Grid.Row="1" Margin="16,4,16,10">
             <StackPanel Orientation="Horizontal">
-                <ui:TextBox x:Name="TbFilter" Width="260" PlaceholderText="筛选关键字…"
+                <ui:TextBox AutomationProperties.Name="筛选日志" x:Name="TbFilter" Width="260" PlaceholderText="筛选关键字…"
                             TextChanged="OnFilterTextChanged"/>
-                <ComboBox x:Name="CbLevel" Width="130" Margin="8,0,0,0"
+                <ComboBox AutomationProperties.Name="日志级别" x:Name="CbLevel" Width="130" Margin="8,0,0,0"
                           SelectionChanged="OnLevelChanged">
                     <ComboBoxItem Content="全部级别"/>
                     <ComboBoxItem Content="INFO 以上"/>
                     <ComboBoxItem Content="WARN 以上"/>
                     <ComboBoxItem Content="仅 ERROR"/>
                 </ComboBox>
-                <ui:ToggleSwitch x:Name="SwAutoScroll" Margin="12,0,0,0" IsChecked="True"
+                <ui:ToggleSwitch AutomationProperties.Name="自动滚动" x:Name="SwAutoScroll" Margin="12,0,0,0" IsChecked="True"
                                  Content="自动滚动"/>
             </StackPanel>
             <TextBlock x:Name="LblCount" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -50,7 +50,7 @@
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Auto" Padding="10,8">
-                <TextBox x:Name="TbLog" IsReadOnly="True" BorderThickness="0"
+                <TextBox AutomationProperties.Name="运行日志" x:Name="TbLog" IsReadOnly="True" BorderThickness="0"
                          Background="Transparent" TextWrapping="NoWrap"
                          FontFamily="Consolas, Cascadia Mono, monospace" FontSize="12"
                          VerticalScrollBarVisibility="Disabled"

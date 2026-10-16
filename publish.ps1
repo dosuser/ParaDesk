@@ -87,16 +87,6 @@ $hkDesktop = $hk['toggleDesktop'].PadRight(12)
 $hkViewOnly = $hk['toggleViewOnly'].PadRight(12)
 $hkRecording = $hk['toggleRecording'].PadRight(12)
 
-function Write-DocFile([string]$Path, [string]$Text) {
-    $crlf = ($Text.TrimEnd() -replace "`r?`n", "`r`n") + "`r`n"
-    [IO.File]::WriteAllText($Path, $crlf, (New-Object Text.UTF8Encoding($true)))
-}
-
-$hk = Get-DefaultHotkeys
-$hkDesktop = $hk['toggleDesktop'].PadRight(12)
-$hkViewOnly = $hk['toggleViewOnly'].PadRight(12)
-$hkRecording = $hk['toggleRecording'].PadRight(12)
-
 $req = @{
     AnyCPU = @{
         En = "  - Windows 10 1903 or later / Windows 11`n  - Pro, Enterprise or Education (Home has no child-session support)`n  - .NET Framework 4.8 (ships with Windows 10 1903 and later)`n  - On Windows on Arm this build runs under x64 emulation; use the -arm64 package to run natively"
@@ -119,6 +109,9 @@ foreach ($flavor in $flavors) {
 
     Write-Host "构建 Release $ver ($flavor) ..." -ForegroundColor Cyan
     $buildArgs = @($ParaDeskProject, '-c', 'Release', '-v', 'minimal', '-nologo', '--no-incremental', "-p:Version=$ver")
+    if ($env:GITHUB_ACTIONS -eq 'true' -and $env:GITHUB_SHA -match '^[a-fA-F0-9]{40}$') {
+        $buildArgs += "-p:SourceRevisionId=$($env:GITHUB_SHA)"
+    }
     $buildArgs += @(Get-ParaDeskBuildArgs -Platform $flavor)
     & $dotnet build @buildArgs
     if ($LASTEXITCODE -ne 0) { throw "构建失败 ($LASTEXITCODE)" }
@@ -143,6 +136,10 @@ foreach ($flavor in $flavors) {
         }
     }
 
+    $stageAbsolute = [IO.Path]::GetFullPath($stage)
+    $distAbsolute = [IO.Path]::GetFullPath($outRoot).TrimEnd('\') + '\'
+    if (-not $stageAbsolute.StartsWith($distAbsolute, [StringComparison]::OrdinalIgnoreCase) -or
+        [IO.Path]::GetFileName($stageAbsolute) -ne "ParaDesk-$ver$suffix") { throw 'Unsafe packaging directory.' }
     if (Test-Path -LiteralPath $stage) {
         try { Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction Stop }
         catch {
@@ -188,8 +185,6 @@ foreach ($flavor in $flavors) {
 
     Copy-Item -LiteralPath (Join-Path $ParaDeskRoot 'LICENSE') -Destination (Join-Path $stage 'LICENSE.txt')
 
-    Write-DocFile -Path (Join-Path $stage 'README.txt') -Text $readmeEn
-    Write-DocFile -Path (Join-Path $stage '使用说明.txt') -Text $readmeZh
 
     $reqEn = $req[$flavor].En
     $reqZh = $req[$flavor].Zh
@@ -206,7 +201,7 @@ $reqEn
 First use
   1. Run ParaDesk.exe and press "Start desktop". The one-time system
      configuration asks for a single administrator approval.
-  2. Restart the computer once after that first configuration.
+  2. Restart Windows only if the diagnostic page requires it.
   3. Pick a monitor and press "Start desktop".
 
 Default hotkeys
@@ -255,7 +250,7 @@ $reqZh
 
 首次使用
   1. 运行 ParaDesk.exe，点“启动桌面”，按提示完成一次性系统配置（需要一次管理员授权）
-  2. 配置后重启电脑一次
+  2. 仅在诊断页提示需要时重启电脑
   3. 选择显示器，点“启动桌面”
 
 默认快捷键

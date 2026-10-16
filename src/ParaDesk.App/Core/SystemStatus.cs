@@ -23,7 +23,16 @@ namespace ParaDesk.Core
         [DataMember(Name = "transportPipe", Order = 11)] public string TransportPipe;
 
         [DataMember(Name = "transportReady", Order = 12)]
-        public bool TransportReady { get { return TransportStatus == 0; } private set { } }
+        public bool TransportReady { get { return HasExistingSession || TransportStatus == 0; } private set { } }
+
+        [DataMember(Name = "hasExistingSession", Order = 17)]
+        public bool HasExistingSession
+        {
+            get { return ChildSessionId != 0 && ChildSessionId != NativeMethods.NoChildSession; }
+            private set { }
+        }
+
+        [DataMember(Name = "transportProbed", Order = 18)] public bool TransportProbed;
 
         [DataMember(Name = "readyToStart", Order = 13)]
         public bool ReadyToStart
@@ -51,7 +60,7 @@ namespace ParaDesk.Core
         [DataMember(Name = "needsSetup", Order = 15)]
         public bool NeedsSetup
         {
-            get { return !Blocked && !ReadyToStart; }
+            get { return !Blocked && SetupIncomplete; }
             private set { }
         }
 
@@ -71,7 +80,11 @@ namespace ParaDesk.Core
                 if (SetupIncomplete)
                     return L.T("点「启动桌面」即可自动完成配置（需要一次管理员授权）。");
                 if (!TransportReady)
-                    return L.T("配置已写入，但子会话监听器需重启电脑后才会启动。请重启电脑。");
+                {
+                    if (unchecked((uint)TransportStatus) == 0x800706BA)
+                        return L.T("子会话服务暂不可用。若刚完成配置，请保存工作后重启电脑。");
+                    return L.T("子会话通道不可用：") + SystemStatus.DescribeTransportError(TransportStatus) + L.T("。请查看诊断日志。");
+                }
                 return null;
             }
             private set { }
@@ -195,7 +208,8 @@ namespace ParaDesk.Core
             switch (unchecked((uint)status))
             {
                 case 0: return L.T("通道可用");
-                case 0x800706BA: return L.T("RPC 服务器不可用 —— 子会话监听器未启动（配置后需重启电脑）");
+                case 0x800706BA: return L.T("RPC 服务不可用");
+                case 0x800700B7: return L.T("通道已存在");
                 case 0x80070005: return L.T("拒绝访问");
                 default: return L.T("错误码 0x") + status.ToString("X8");
             }
@@ -249,9 +263,18 @@ namespace ParaDesk.Core
             r.InsideChildSession = InsideChildSession();
             r.ChildSessionId = ChildSessionId();
 
-            string pipe;
-            r.TransportStatus = ProbeTransport(out pipe);
-            r.TransportPipe = pipe;
+            // A live child already proves service availability; creating another
+            // transport can return ERROR_ALREADY_EXISTS.
+            r.TransportPipe = "";
+            if (!r.HasExistingSession && !r.Blocked && !r.NeedsSetup)
+            {
+                string pipe;
+                r.TransportStatus = ProbeTransport(out pipe);
+                r.TransportPipe = pipe;
+                r.TransportProbed = true;
+            }
+            else if (!r.HasExistingSession)
+                r.TransportStatus = -1;
             return r;
         }
 

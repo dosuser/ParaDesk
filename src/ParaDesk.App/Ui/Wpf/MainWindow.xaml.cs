@@ -36,7 +36,9 @@ namespace ParaDesk.Shell
             _app = app;
             InitializeComponent();
             AboutTitle.Text = AppInfo.Title;
-            AboutVersion.Text = L.T("版本 ") + AppInfo.Version;
+            AboutVersion.Text = L.T("版本 ") + AppInfo.BuildId;
+            AboutExePath.Text = AppInfo.ExecutablePath;
+            AboutDataPath.Text = AppInfo.ActualDataDir;
 
             // 运行时长要跳秒，但整页刷新代价大（含注册表与显示器枚举），
             // 所以单开一个轻量 ticker 只更新指标数字。
@@ -54,7 +56,7 @@ namespace ParaDesk.Shell
             _startupSaveTimer.Tick += delegate { SaveStartupCommand(); };
             TbStartupCmd.LostFocus += OnStartupCmdLostFocus;
             TbStartupDir.LostFocus += OnStartupCmdLostFocus;
-            TbStartupCmd.PlaceholderText = L.T("例如 wt -d C:\\repo 或 powershell -NoExit -Command claude");
+            TbStartupCmd.PlaceholderText = L.T("例如 wt -d C:\\repo");
             TbStartupDir.PlaceholderText = L.T("工作目录（留空为用户主目录）");
 
             InitHotkeySlots();
@@ -66,13 +68,14 @@ namespace ParaDesk.Shell
         private void OnTick(object sender, EventArgs e)
         {
             if (!IsVisible) return;   // 收进托盘时不做无谓刷新
+            UpdateSaveStatus();
             try
             {
                 // 录制计时：必须放在桌面指标之前，且不受指标面板可见性影响，
                 // 否则没开分身桌面时录制时长就不会跳（上一版就是栽在这里）。
                 if (_app.IsRecording)
                 {
-                    RecElapsed.Text = FormatUptime(_app.RecordingStartedAt);
+                    UpdateRecordingStatus();
                 }
                 else if (RecElapsed.Text.Length > 0 && PageRecord.Visibility == Visibility.Visible)
                 {
@@ -202,7 +205,7 @@ namespace ParaDesk.Shell
                 PopulateMonitors(mons, p);
                 UpdateMonitorHint(mons, p, attached);
                 string scope = string.Format(
-                    L.T("以下设置随方案「{0}」保存，换方案会换成另一套。"), p.Name);
+                    L.T("当前方案：{0}。以下设置随方案保存。"), p.Name);
                 DisplayScopeHint.Text = scope;
                 InsideScopeHint.Text = scope;
 
@@ -220,8 +223,8 @@ namespace ParaDesk.Shell
                 ClipManualPanel.Visibility = (p.Clipboard == ClipboardMode.Manual && attached)
                     ? Visibility.Visible : Visibility.Collapsed;
                 ClipHint.Text = attached
-                    ? L.T("修改后需重新启动分身桌面才生效")
-                    : L.T("系统默认与主桌面共享；手动模式可避免两边互相覆盖");
+                    ? L.T("收起后可修改，重新接入生效")
+                    : L.T("默认与主桌面共享；收起后可修改");
 
                 RefreshInsideDesktop(p);
 
@@ -241,8 +244,8 @@ namespace ParaDesk.Shell
                 foreach (var slot in _hotkeySlots) ShowSavedHotkey(s, slot);
 
                 CredHint.Text = CredentialStore.Exists
-                    ? L.T("已保存凭据（DPAPI 加密，仅本机本账户可解）")
-                    : L.T("通常不需要——启动桌面时的那次配置已启用免密登录策略");
+                    ? L.T("已保存凭据，使用 Windows 加密")
+                    : L.T("通常无需保存；登录失败时可手动设置");
 
                 // 沙盒功能没开时不再让用户自己去「启用或关闭 Windows 功能」翻，
                 // 按钮直接变成"启用"，由程序提权装。家庭版是真装不了，只能如实说。
@@ -256,9 +259,9 @@ namespace ParaDesk.Shell
                     : Providers.SandboxProvider.IsRunning() ? L.T("沙盒运行中")
                     : L.T("启动沙盒桌面");
                 SandboxHint.Text = sbOk
-                    ? L.T("系统同时只允许一个分身桌面；需要更多隔离桌面时可用 Windows 沙盒（即抛环境，不共享文件）。")
+                    ? L.T("同时仅支持一个分身桌面；Windows 沙盒提供临时隔离环境。")
                     : _sandboxNeedsEnable
-                        ? L.T("需要先启用 Windows 沙盒功能。点右侧即可，需要一次管理员授权并重启电脑。")
+                        ? L.T("需先启用沙盒功能：需要管理员授权并重启电脑。")
                         : sbReason;
 
                 AboutEnv.Text = string.Format(
@@ -284,6 +287,7 @@ namespace ParaDesk.Shell
             Localizer.Translate(this);
 
             UpdateNotice();
+            UpdateSaveStatus();
         }
 
         private sealed class StatusTone
@@ -323,19 +327,24 @@ namespace ParaDesk.Shell
             {
                 tone = ToneBlue; title = L.T("正在连接…"); badge = L.T("连接中"); busy = true;
                 symbol = global::Wpf.Ui.Controls.SymbolRegular.PlugConnected24;
-                detail = L.T("首次连接会为你的账户建立第二个登录，可能需要一两分钟。");
+                detail = L.T("首次登录可能需要一两分钟。");
+            }
+            else if (attached && surfaceState == Rdp.SurfaceState.LoggingIn)
+            {
+                tone = ToneBlue; title = L.T("正在登录…"); badge = L.T("登录中"); busy = true;
+                detail = L.T("已连接，等待 Windows 完成登录。若出现凭据窗口，请使用账户密码。");
             }
             else if (attached && surfaceState == Rdp.SurfaceState.Reconnecting)
             {
                 tone = ToneAmber; title = L.T("正在重连…"); badge = L.T("重连中"); busy = true;
                 symbol = global::Wpf.Ui.Controls.SymbolRegular.ArrowSync24;
-                detail = L.T("连接中断，正在自动恢复。分身桌面里的程序不受影响。");
+                detail = L.T("正在恢复连接，桌面里的程序继续运行。");
             }
             else if (attached)
             {
                 tone = ToneGreen; title = L.T("分身桌面运行中"); badge = L.T("运行中");
                 symbol = global::Wpf.Ui.Controls.SymbolRegular.CheckmarkCircle24;
-                detail = L.T("在里面打开终端即可开始工作；你的主屏键鼠不受影响。");
+                detail = L.T("桌面已就绪，主桌面键鼠不受影响。");
                 if (p.ViewOnly)
                     detail = L.T("已开启仅查看：你的键鼠不会作用到分身桌面。") +
                              (L.Current == "en" ? " " : "") + detail;
@@ -344,7 +353,7 @@ namespace ParaDesk.Shell
             {
                 tone = ToneAmber; title = L.T("已收起（后台运行中）"); badge = L.T("后台");
                 symbol = global::Wpf.Ui.Controls.SymbolRegular.EyeOff24;
-                detail = L.T("分身桌面里的程序仍在运行。点「重新接入」可再次看到画面。");
+                detail = L.T("程序仍在运行，点「重新接入」恢复画面。");
             }
             else if (!env.ReadyToStart)
             {
@@ -356,7 +365,7 @@ namespace ParaDesk.Shell
             {
                 tone = ToneGray; title = L.T("未启动"); badge = L.T("就绪");
                 symbol = global::Wpf.Ui.Controls.SymbolRegular.Desktop24;
-                detail = L.T("一切就绪，点「启动桌面」即可在选定显示器上开出分身桌面。");
+                detail = L.T("点「启动桌面」即可开始。");
             }
 
             StatusTitle.Text = title;
@@ -394,7 +403,11 @@ namespace ParaDesk.Shell
         private static string FormatUptime(DateTime? since)
         {
             if (since == null) return "—";
-            var d = DateTime.Now - since.Value;
+            return FormatDuration(DateTime.Now - since.Value);
+        }
+
+        private static string FormatDuration(TimeSpan d)
+        {
             if (d.TotalSeconds < 0) return "—";
             if (d.TotalHours >= 1)
                 return ((int)d.TotalHours) + ":" + d.Minutes.ToString("00") + ":" + d.Seconds.ToString("00");
@@ -637,7 +650,7 @@ namespace ParaDesk.Shell
             AddDiagRow(L.T("远程桌面服务"), env.TermServiceRunning,
                 L.T("运行中"), L.T("未运行"), true);
             // 通道未就绪多半是"配置写好了但还没重启"，修不了，只能等重启
-            AddDiagRow(L.T("子会话通道"), env.TransportReady, L.T("可用"),
+            AddDiagRow(L.T("子会话通道"), env.TransportReady, env.HasExistingSession ? L.T("已建立（桌面运行中）") : L.T("可用"),
                 SystemStatus.DescribeTransportError(env.TransportStatus), false);
             AddDiagRow(L.T("屏幕捕获（录制）"), captureOk,
                 L.T("支持"), L.T("需要 Windows 10 1903 或更高版本"), false);
@@ -1214,7 +1227,7 @@ namespace ParaDesk.Shell
                 SelectChoice(CbRecSegment, o.SegmentMinutes);
                 CbRecBitrate.SelectedIndex = BitrateIndex(o.BitrateMbps);
 
-                RecAudioHint.Text = L.T("系统声音录的是本机所有播放的声音（含分身桌面）；麦克风需在隐私设置中允许桌面应用访问。");
+                RecAudioHint.Text = L.T("系统声音包含本机全部播放；麦克风需允许桌面应用访问。");
                 CbRecAudio.IsEnabled = !busy;
 
                 CbRecTarget.IsEnabled = !busy;
@@ -1223,8 +1236,8 @@ namespace ParaDesk.Shell
                 CbRecSegment.IsEnabled = !busy;
                 SwRecCursor.IsEnabled = !busy;
                 BtnRecStart.IsEnabled = !busy && CbRecTarget.Items.Count > 0;
-                BtnRecStop.IsEnabled = busy;
-                BtnRecPause.IsEnabled = busy;
+                BtnRecStop.IsEnabled = busy && _app.RecordingState != Recording.RecorderState.Stopping;
+                BtnRecPause.IsEnabled = _app.RecordingState == Recording.RecorderState.Recording;
                 BtnRecPause.Content = _app.IsRecordingPaused ? L.T("继续") : L.T("暂停");
                 BtnScreenshot.IsEnabled = !_screenshotBusy;
 
@@ -1238,14 +1251,18 @@ namespace ParaDesk.Shell
             bool busy = _app.IsRecording;
             var tone = busy ? ToneRed : ToneGray;
 
-            RecTitle.Text = busy ? L.T("正在录制") : L.T("未在录制");
+            var state = _app.RecordingState;
+            RecTitle.Text = state == Recording.RecorderState.Starting ? L.T("正在准备录制…")
+                : state == Recording.RecorderState.Stopping ? L.T("正在保存录制…")
+                : _app.IsRecordingPaused ? L.T("录制已暂停")
+                : busy ? L.T("正在录制") : L.T("未在录制");
             RecDetail.Text = busy
                 ? L.T("录制中的目标：") + (_app.RecordingTargetName ?? "—")
                 : L.T("选择目标后点「开始录制」。");
             RecIcon.Symbol = busy
                 ? global::Wpf.Ui.Controls.SymbolRegular.Record24
                 : global::Wpf.Ui.Controls.SymbolRegular.Video24;
-            RecElapsed.Text = busy ? FormatUptime(_app.RecordingStartedAt) : "";
+            RecElapsed.Text = busy ? FormatDuration(_app.RecordingElapsed) : "";
 
             RecIcon.Foreground = tone.Fore;
             RecIconBg.Background = tone.Tint;
@@ -1710,10 +1727,12 @@ namespace ParaDesk.Shell
             if (_startupEditProfile != null) SaveStartupCommand();
 
             var cur = _app.Settings.GetActiveProfile();
+            var dialog = new RenameDialog("复制方案", cur.Name + " 2", delegate(string value) { return ProfileNameTaken(value, null); }) { Owner = this };
+            if (dialog.ShowDialog() != true) return;
             // 以当前设置为蓝本复制一份，用户改完即得第二套方案
             var copy = new DesktopProfile
             {
-                Name = cur.Name,
+                Name = dialog.ResultName,
                 MonitorDevice = cur.MonitorDevice,
                 WindowMode = cur.WindowMode,
                 ResolutionMode = cur.ResolutionMode,
@@ -1735,7 +1754,7 @@ namespace ParaDesk.Shell
             string name = _app.Settings.AddProfile(copy);
             _app.SelectProfile(name);
             RefreshAll();
-            Info(string.Format(L.T("已创建方案「{0}」，可以直接修改它的显示设置。"), name));
+            Info(string.Format(L.T("已创建方案「{0}」。"), name));
         }
 
         private void OnProfileDelete(object sender, RoutedEventArgs e)
@@ -1833,7 +1852,7 @@ namespace ParaDesk.Shell
 
         private static string DescribeViewOnlyHint(AppSettings s)
         {
-            string text = L.T("你的键鼠不会作用到分身桌面；AI 注入的操作不受影响");
+            string text = L.T("不接收你的键鼠操作；程序注入不受影响");
             var b = FindBinding(s, "toggleViewOnly");
             if (b != null && b.Enabled && b.Key != 0)
                 text += string.Format(L.T("。热键 {0}"), HotkeyService.Describe(b.Modifiers, b.Key));
@@ -2287,8 +2306,8 @@ namespace ParaDesk.Shell
                 : MonitorService.Find(mons, p.MonitorDevice);
 
             ResolutionHint.Text = m != null
-                ? string.Format(L.T("连接中即时生效，无需断开重连；选项来自 {0} 实际支持的模式"), MonitorNaming.NameOf(m))
-                : L.T("连接中即时生效，无需断开重连；选项来自目标显示器实际支持的模式");
+                ? string.Format(L.T("即时生效；固定分辨率选项取自 {0}"), MonitorNaming.NameOf(m))
+                : L.T("连接时即时生效；窗口模式下可跟随窗口大小");
         }
 
         /// <summary>目标显示器卡片的副标题——把当前处境一句话讲清楚。</summary>
@@ -2309,7 +2328,7 @@ namespace ParaDesk.Shell
             }
             else if (mons.Count <= 1)
             {
-                MonitorHint.Text = L.T("这台电脑只有一块显示器，分身桌面会盖在主桌面上，用热键或「收起桌面」切回。");
+                MonitorHint.Text = L.T("当前仅一块屏幕；用热键或「收起桌面」切回主桌面。");
             }
             else if (attached && !string.IsNullOrEmpty(activeDev))
             {
@@ -2323,11 +2342,11 @@ namespace ParaDesk.Shell
                 var fallback = MonitorService.Resolve(null);
                 MonitorHint.Text = fallback != null
                     ? string.Format(L.T("未指定时用主屏之外的第一块，现在是 {0}。"), MonitorNaming.NameOf(fallback))
-                    : L.T("下面的分辨率与缩放按这块屏的能力列出。");
+                    : L.T("分辨率和缩放选项取自此屏幕。");
             }
             else
             {
-                MonitorHint.Text = L.T("下面的分辨率与缩放按这块屏的能力列出。");
+                MonitorHint.Text = L.T("分辨率和缩放选项取自此屏幕。");
             }
         }
 
@@ -2350,9 +2369,11 @@ namespace ParaDesk.Shell
             CbResolution.Items.Clear();
 
             var current = DisplayCapabilities.GetCurrent(device);
-            string followText = current != null
-                ? string.Format(L.T("跟随显示器（{0}）"), current.Resolution)
-                : L.T("跟随显示器");
+            string followText;
+            if (p.WindowMode == WindowMode.Fullscreen)
+                followText = current != null ? string.Format(L.T("跟随显示器（{0}）"), current.Resolution) : L.T("跟随显示器");
+            else
+                followText = L.T("跟随窗口大小");
             CbResolution.Items.Add(new ModeItem(null, followText));
 
             var modes = DisplayCapabilities.GetResolutions(device);

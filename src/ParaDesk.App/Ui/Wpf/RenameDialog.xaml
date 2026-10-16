@@ -20,7 +20,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="重命名显示器" ShowMaximize="False" ShowMinimize="False">
+        <ui:TitleBar x:Name="DialogTitle" Grid.Row="0" Title="重命名显示器" ShowMaximize="False" ShowMinimize="False">
             <ui:TitleBar.Icon>
                 <ui:SymbolIcon Symbol="Rename24"/>
             </ui:TitleBar.Icon>
@@ -28,10 +28,10 @@
 
         <StackPanel Grid.Row="1" Margin="24,8,24,0">
             <TextBlock x:Name="TbSubject" Opacity="0.75" TextWrapping="Wrap"/>
-            <ui:TextBox x:Name="TbName" Margin="0,14,0,0"
+            <ui:TextBox AutomationProperties.Name="名称" x:Name="TbName" Margin="0,14,0,0"
                         PlaceholderText="例如：左侧竖屏、AI 工作屏"/>
-            <TextBlock Margin="0,10,0,0" FontSize="12" Opacity="0.62" TextWrapping="Wrap"
-                       Text="留空即恢复默认名称。名字按显示器接口保存，换分辨率或重新插拔都不会丢。"/>
+            <TextBlock x:Name="NameHint" Margin="0,10,0,0" FontSize="12" Opacity="0.62" TextWrapping="Wrap"
+                       Text="留空恢复默认名称；按显示器接口保存。"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"

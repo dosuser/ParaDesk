@@ -94,26 +94,15 @@ namespace ParaDesk.Shell
                     return;
                 }
 
-                if (string.Equals(user, _savedUser, StringComparison.Ordinal))
+                if (CredentialStore.CanKeepPassword(_hasSaved, _savedUser, user))
                 {
                     DialogResult = true;
                     return;
                 }
 
-                string oldUser, oldPwd;
-                if (!CredentialStore.TryLoad(out oldUser, out oldPwd))
-                {
-                    MessageBox.Show(this, L.T("读取已保存的密码失败，请重新输入密码。"), AppInfo.ProductName,
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-                if (string.IsNullOrEmpty(oldPwd))
-                {
-                    MessageBox.Show(this, L.T("请填写密码。"), AppInfo.ProductName,
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-                pwd = oldPwd;
+                MessageBox.Show(this, L.T("账户已更改，请重新输入密码。"), AppInfo.ProductName,
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
 
             if (!CredentialStore.Save(user, pwd))

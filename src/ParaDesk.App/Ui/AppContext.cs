@@ -167,6 +167,16 @@ namespace ParaDesk.Ui
 
         public string RecordingTargetName { get { return _recordingTargetName; } }
 
+        public Recording.RecorderState RecordingState
+        {
+            get { return _recorder == null ? Recording.RecorderState.Idle : _recorder.State; }
+        }
+
+        public TimeSpan RecordingElapsed
+        {
+            get { return _recorder == null ? TimeSpan.Zero : _recorder.Elapsed; }
+        }
+
         public DateTime? RecordingStartedAt
         {
             get { return IsRecording ? _recorder.StartedAt : (DateTime?)null; }
@@ -483,7 +493,7 @@ namespace ParaDesk.Ui
             }
 
             int seg = opts.SegmentMinutes;
-            if (seg > 0 && !rec.IsPaused && (DateTime.Now - rec.StartedAt).TotalMinutes >= seg)
+            if (seg > 0 && !rec.IsPaused && rec.Elapsed.TotalMinutes >= seg)
             {
                 Log.Info("本段录制已满 " + seg + " 分钟，自动分段");
                 _rolloverTarget = _currentTarget;
@@ -1233,6 +1243,16 @@ namespace ParaDesk.Ui
             SurfaceSetAlwaysOnTop(p.AlwaysOnTop);
         }
 
+        public bool RenameProfile(string oldName, string newName)
+        {
+            if (!_settings.RenameProfile(oldName, newName)) return false;
+            if (_surfaceProfile != null && _surfaceProfile.Name == oldName)
+                _surfaceProfile.Name = newName.Trim();
+            SettingsStore.Save(_settings);
+            RefreshTray();
+            return true;
+        }
+
         public void SelectProfile(string name)
         {
             if (string.IsNullOrEmpty(name) || !_settings.HasProfile(name)) return;
@@ -1868,6 +1888,7 @@ namespace ParaDesk.Ui
             {
                 case Rdp.SurfaceState.Idle: return "idle";
                 case Rdp.SurfaceState.Connecting: return "connecting";
+                case Rdp.SurfaceState.LoggingIn: return "loggingIn";
                 case Rdp.SurfaceState.Connected: return "connected";
                 case Rdp.SurfaceState.Reconnecting: return "reconnecting";
                 case Rdp.SurfaceState.Closing: return "closing";
@@ -2241,7 +2262,7 @@ namespace ParaDesk.Ui
 
             var pending = NewPending(reply, StartWaitTimeoutMs, delegate
             {
-                return ControlResponse.Fail(ExitCodes.Failed, L.T("等待 100 秒仍未连上，分身桌面仍在连接中。"));
+                return ControlResponse.Fail(ExitCodes.Failed, L.T("等待 100 秒仍未完成登录，请检查连接窗口或诊断日志。"));
             });
             var entry = new KeyValuePair<DesktopSurface, PendingReply>(s, pending);
             var removePending = pending.Cleanup;

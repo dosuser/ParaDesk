@@ -1,4 +1,4 @@
-﻿;
+;
 ; 由 publish.ps1 调用，版本号与产物目录通过 /D 命令行传入，
 ; 不在这里写死——写死必然和 AssemblyVersion 漂移。
 ;
@@ -11,7 +11,7 @@
 #endif
 
 #ifndef AppVersion
-  #define AppVersion "1.1.0"
+  #define AppVersion "1.2.0"
 #endif
 #ifndef SourceDir
   #define SourceDir "..\dist\ParaDesk-" + AppVersion

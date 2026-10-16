@@ -152,8 +152,6 @@ namespace ParaDesk.Core
                 Add("日志与反馈", "Logs & feedback");
                 Add("运行日志", "Activity log");
                 Add("使用引导", "Guided setup");
-                Add("键鼠归谁、以及与主桌面之间怎么协作", "Who owns input, and how the two desktops share");
-                Add("在任何程序里都能用，不必先切回本窗口", "Works from any app — no need to come back here");
                 Add("出问题时先看这里", "Start here when something goes wrong");
                 Add("环境正常", "Environment OK");
                 Add("有未通过项", "Some checks failed");
@@ -290,18 +288,10 @@ namespace ParaDesk.Core
                     "Windows allows only one parallel desktop at a time. For more isolated desktops, use Windows Sandbox.");
 
                 // 画面
-                Add("连接中即时生效，无需断开重连；选项来自目标显示器实际支持的模式",
-                    "Applies instantly while connected — no reconnect. Options come from the modes the target monitor actually supports");
 
                 // 输入与共享
-                Add("你的键鼠不会作用到分身桌面；AI 注入的操作不受影响",
-                    "Your keyboard and mouse won't reach the parallel desktop; input injected by AI is unaffected");
-                Add("系统默认与主桌面共享；手动模式可避免两边互相覆盖",
-                    "Shared with the main desktop by default; manual mode keeps the two sides from overwriting each other");
 
                 // 录制
-                Add("单独录某个分身桌面窗口，或整块显示器",
-                    "Record a single parallel-desktop window, or a whole monitor");
                 Add("选择目标后点「开始录制」。", "Pick a target, then press Start recording.");
                 Add("系统声音或麦克风", "System audio or microphone");
                 Add("关闭后画面中不出现鼠标", "Turn off to keep the pointer out of the video");
@@ -313,8 +303,6 @@ namespace ParaDesk.Core
                 Add("切换「仅查看」", "Toggle view only");
                 Add("开始 / 停止录制", "Start / stop recording");
                 Add("点击输入框后直接按组合键", "Click a field, then press the combination");
-                Add("必须搭配 Ctrl / Alt / Shift / Win；按 Backspace 可清除。若提示注册失败，说明该组合已被其它程序占用。",
-                    "Must include Ctrl / Alt / Shift / Win; press Backspace to clear. A registration failure means another program already owns that combination.");
 
                 // 设置
 
@@ -323,36 +311,20 @@ namespace ParaDesk.Core
                 Add("WARN 以上", "WARN and above");
 
                 // 关于
-                Add("在闲置的显示器上开出第二个桌面，拥有独立的鼠标键盘，与主桌面互不干扰；同时共用同一账户与全部文件，软件、登录状态和工作进度完全通用。",
-                    "Open a second desktop on a spare monitor with its own mouse and keyboard, fully out of the way of your main one — while sharing the same account and all your files, so apps, sign-ins and work in progress carry straight over.");
 
                 // 首次运行向导
                 Add("欢迎使用 ParaDesk", "Welcome to ParaDesk");
                 Add("给你的电脑开一个分身", "Give your PC a second self");
-                Add("ParaDesk 会在你选定的显示器上开出第二个 Windows 桌面。它有自己独立的鼠标和键盘——AI 或另一个人在那边操作时，你主屏的键鼠完全不受影响。",
-                    "ParaDesk opens a second Windows desktop on the monitor you choose. It has its own mouse and keyboard — while AI or another person works over there, your main screen's input is completely unaffected.");
-                Add("它和虚拟机不一样", "It is not a virtual machine");
-                Add("分身桌面用的是你同一个 Windows 账户：软件、文件、浏览器登录状态、AI 的记忆和工作进度全部通用，不需要来回传文件。代价是它不做安全隔离——那边能访问你所有文件，和你自己在主桌面操作的权限一样。",
-                    "The parallel desktop runs under your same Windows account: apps, files, browser sign-ins, and your AI's memory and work in progress all carry over, with no copying files back and forth. The trade-off is that it provides no security isolation — that side reaches every file you can, with exactly your permissions.");
                 Add("需要 Windows 专业版及以上", "Requires Windows Pro or higher");
                 Add("选择显示位置", "Choose where it appears");
-                Add("点一下要让分身桌面出现的那块屏幕。分不清哪块是哪块时，点“识别屏幕”。",
-                    "Click the screen where the parallel desktop should appear. If you can't tell them apart, press Identify.");
                 Add("准备就绪", "Ready to go");
-                Add("接下来就可以启动分身桌面了。几个值得先知道的点：",
-                    "You can start the parallel desktop now. A few things worth knowing first:");
                 Add("常用操作", "Everyday use");
-                Add("必须知道的几点限制", "Limits worth knowing");
-                Add("• 系统同时只允许一个分身桌面，这是 Windows 的限制\n• 剪贴板默认与主桌面共享；同一份浏览器配置不能两边同开，可在“显示”页一键生成独立配置的快捷方式\n• 重启电脑前请先“关闭桌面”",
-                    "• Only one parallel desktop can exist at a time — a Windows limitation\n• The clipboard is shared with the main desktop by default; one browser profile can't run on both sides, but Input & sharing can create a shortcut with its own profile\n• Always Close desktop before restarting the PC");
 
                 // ---- 运行中由代码写入的提示（调用处已包 L.T）----
 
                 Add("版本 ", "Version ");
                 Add("跟随", "Match");
                 Add("所有前置条件均已满足。", "Every prerequisite is met.");
-                Add("系统声音录的是本机所有播放的声音（含分身桌面）；麦克风需在隐私设置中允许桌面应用访问。",
-                    "System audio captures everything this PC plays, including the parallel desktop. The microphone requires desktop apps to be allowed access in Privacy settings.");
                 Add("无法开始录制", "Couldn't start recording");
                 Add("录制已开始", "Recording started");
                 Add("文件将保存到 ", "The file will be saved to ");
@@ -465,18 +437,10 @@ namespace ParaDesk.Core
 
                 // 连接
                 Add("正在连接分身桌面……", "Connecting to the parallel desktop…");
-                Add("首次连接会为你的账户建立第二个登录，可能需要一两分钟。",
-                    "The first connection creates a second sign-in for your account, which can take a minute or two.");
                 Add("启动失败：", "Couldn't start: ");
                 Add("连接失败", "Connection failed");
                 Add("连接中断，正在自动重连…（第 {0}/{1} 次）",
                     "Connection lost, reconnecting… (attempt {0} of {1})");
-                Add("连接中断，正在自动恢复。分身桌面里的程序不受影响。",
-                    "The connection dropped and is recovering automatically. Programs inside the parallel desktop are unaffected.");
-                Add("在里面打开终端即可开始工作；你的主屏键鼠不受影响。",
-                    "Open a terminal inside to get going; your main screen's keyboard and mouse are unaffected.");
-                Add("分身桌面里的程序仍在运行。点「重新接入」可再次看到画面。",
-                    "Programs inside are still running. Press Reattach to see the screen again.");
                 Add("分身桌面被另一个连接接管了。系统同一时间只允许一个子会话。",
                     "Another connection took over the parallel desktop. Windows allows only one child session at a time.");
                 Add("分身桌面已注销。", "The parallel desktop was signed out.");
@@ -498,8 +462,6 @@ namespace ParaDesk.Core
                 Add("3. 企业策略禁用了凭据委派；", "3. Enterprise policy disables credential delegation;");
                 Add("4. 「手机连接」等组件与子会话冲突。",
                     "4. Components such as Phone Link conflict with child sessions.");
-                Add("一切就绪，点「启动桌面」即可在选定显示器上开出分身桌面。",
-                    "Everything is ready — press Start desktop to open the parallel desktop on the monitor you picked.");
                 Add("分身桌面仍在运行", "The parallel desktop is still running");
                 Add("正在关闭分身桌面，请稍候…", "Closing the parallel desktop, please wait…");
                 Add("关闭桌面会结束分身桌面里正在运行的所有程序（相当于注销登录）。",
@@ -581,10 +543,6 @@ namespace ParaDesk.Core
                 // 主界面杂项
                 Add("修改后需重新启动分身桌面才生效",
                     "Takes effect after the parallel desktop is restarted");
-                Add("已保存凭据（DPAPI 加密，仅本机本账户可解）",
-                    "Credentials saved (DPAPI-encrypted; only this account on this PC can decrypt them)");
-                Add("系统同时只允许一个分身桌面；需要更多隔离桌面时可用 Windows 沙盒（即抛环境，不共享文件）。",
-                    "Windows allows only one parallel desktop at a time. For more isolated desktops use Windows Sandbox — disposable, and sharing no files.");
                 Add("跟随显示器（{0}）", "Match monitor ({0})");
                 Add("原生", "native");
                 Add("（该屏未报告支持）", "(not reported as supported)");
@@ -594,8 +552,6 @@ namespace ParaDesk.Core
                     "Couldn't set the frame rate — administrator approval may not have been granted.");
                 Add("修改后需重启电脑生效", "takes effect after a restart");
                 Add("设置开机自启失败，详见日志。", "Couldn't change the run-at-startup setting — see the log.");
-                Add("已创建方案「{0}」，可以直接修改它的显示设置。",
-                    "Profile “{0}” created — its display settings are ready to edit.");
                 Add("确定删除方案「{0}」吗？", "Delete profile “{0}”?");
                 Add("配置完成，现在可以启动桌面了。", "Setup complete — you can start the desktop now.");
                 Add("配置已写入，请重启电脑后再启动桌面。",
@@ -622,27 +578,16 @@ namespace ParaDesk.Core
                 Add("清空失败：", "Couldn't clear it: ");
 
                 // ---- 「画面」页：目标显示器与作用域 ----
-
-                Add("分身桌面开在哪块屏、以及呈现得多清晰",
-                    "Which screen it opens on, and how sharp it looks");
                 Add("以下设置随方案保存。", "These settings are saved with the profile.");
-                Add("以下设置随方案「{0}」保存，换方案会换成另一套。",
-                    "These are saved with profile “{0}” — switching profiles swaps in a different set.");
 
                 Add("目标显示器", "Target monitor");
                 Add("自动", "Automatic");
                 // 显示器重命名
                 // 精简后的说明文案
-                Add("运行中不可改，收起桌面后再调", "Locked while running — hide the desktop to change");
-                Add("运行中不可改", "Locked while running");
                 Add("默认 30 FPS。需要管理员授权，重启电脑后生效。",
                     "30 FPS by default. Needs administrator approval and a restart.");
-                Add("同一份浏览器配置不能两边同开，用独立配置的快捷方式绕开",
-                    "One browser profile can't run on both sides — use a shortcut with its own profile");
                 Add("窗口被遮挡也不影响录制内容。", "Covering the window doesn't affect the recording.");
                 Add("未选目标时自动录分身桌面", "Records the parallel desktop when no target is picked");
-                Add("「启动桌面」会自动配置。仅在系统更新或组策略改回设置时才需要手动修复。",
-                    "Start desktop configures things automatically. Only needed to repair after a Windows update or group policy reverts them.");
 
                 Add("修复", "Fix");
                 Add("系统组件缺失，无法修复", "System component missing — can't be fixed");
@@ -650,8 +595,6 @@ namespace ParaDesk.Core
                 Add("重命名显示器", "Rename monitor");
                 Add("给这块屏起个名字", "Give this screen a name");
                 Add("例如：左侧竖屏、AI 工作屏", "e.g. Left portrait, AI workspace");
-                Add("留空即恢复默认名称。名字按显示器接口保存，换分辨率或重新插拔都不会丢。",
-                    "Leave empty to restore the default name. Names are stored per display output, so they survive resolution changes and replugging.");
                 Add("{0}　{1}×{2}{3}", "{0}　{1}×{2}{3}");
                 Add("　主屏", "　primary");
                 Add("这块显示器已断开，插回后才能改名。",
@@ -667,12 +610,8 @@ namespace ParaDesk.Core
                     "With none chosen it uses the first screen that isn't primary — currently {0}.");
                 Add("{0} 已断开，画面暂时放在 {1}；插回后会自动回到原屏。",
                     "{0} is disconnected, so the view sits on {1} for now; it returns automatically when you plug it back in.");
-                Add("下面的分辨率与缩放按这块屏的能力列出。",
-                    "The resolution and scale below are listed from this screen's capabilities.");
                 Add("分身桌面正在运行；换一块屏会立刻搬过去。",
                     "The parallel desktop is running; picking another screen moves it immediately.");
-                Add("这台电脑只有一块显示器，分身桌面会盖在主桌面上，用热键或「收起桌面」切回。",
-                    "This PC has only one monitor, so the parallel desktop covers your main one — use the hotkey or Hide desktop to switch back.");
 
                 // 目标屏被拔掉：只提示，绝不改写 MonitorDevice
                 Add("{0}（已断开）", "{0} (disconnected)");
@@ -682,8 +621,6 @@ namespace ParaDesk.Core
 
                 Add("全局设置", "System-wide");
                 Add("全系统", "system-wide");
-                Add("下面这项由 Windows 统一管理，不属于任何方案或显示器，改一次整台电脑生效。",
-                    "Windows manages the setting below. It belongs to no profile and no monitor — changing it once affects the whole PC.");
                 Add("（超出目标屏的 {0}Hz）", " (beyond the target screen's {0}Hz)");
                 Add("目标屏刷新率", "target screen's refresh rate");
                 Add("{0} FPS（当前整机设置）", "{0} FPS (current system-wide setting)");
@@ -724,8 +661,6 @@ namespace ParaDesk.Core
                 // 沙盒功能启用
                 Add("启用沙盒功能", "Enable Sandbox");
                 Add("正在启用…", "Enabling…");
-                Add("需要先启用 Windows 沙盒功能。点右侧即可，需要一次管理员授权并重启电脑。",
-                    "Windows Sandbox has to be enabled first. Use the button — it needs one administrator approval and a restart.");
                 Add("将启用 Windows 沙盒功能。这是 Windows 的可选组件，需要一次管理员授权，装完要重启电脑才能使用。",
                     "This enables Windows Sandbox, an optional Windows component. It needs one administrator approval, and a restart before it can be used.");
                 Add("现在启用吗？", "Enable it now?");
@@ -736,13 +671,7 @@ namespace ParaDesk.Core
                     "It also turns off Cross Device Resume and suppresses the system error dialog it raises inside the parallel desktop.");
                 Add("启动桌面时自动启用", "Enabled when you start the desktop");
                 Add("启动桌面时自动启动", "Started when you start the desktop");
-                Add("不用在这里操作——第一次点「启动桌面」时会一次性配置好，只需一次管理员授权。",
-                    "Nothing to do here — the first time you press Start desktop it configures everything at once, with a single administrator approval.");
-                Add("确认这台电脑具备运行条件。有未通过项也不用管——第一次点「启动桌面」时会自动配置好，只需一次管理员授权。",
-                    "Confirm this PC meets the requirements. Failed items are fine — the first time you press Start desktop they get configured automatically, with a single administrator approval.");
-                Add("那一次授权会改什么", "What that one approval changes");
                 Add("重新配置系统", "Reconfigure the system");
-                Add("重新走一遍首次运行的引导", "Walk through the first-run guide again");
 
                 // ---- 跨设备功能冲突 ----
                 Add("打开凭据对话框失败，详见日志。", "Couldn't open the credentials dialog — see the log.");
@@ -752,9 +681,6 @@ namespace ParaDesk.Core
                 Add("保存登录凭据", "Save sign-in credentials");
                 Add("分身桌面通常使用当前登录身份。需要保存凭据时，请输入账户密码，不能使用 Windows Hello PIN。Microsoft 账户名使用 MicrosoftAccount\\邮箱。保存凭据不代表 Windows 已验证登录成功。",
                     "The parallel desktop usually uses your current identity. If you save credentials, enter the account password, not a Windows Hello PIN. For a Microsoft account, use MicrosoftAccount\\email. Saving credentials does not confirm a successful Windows sign-in.");
-                Add("DPAPI 加密，仅本机本账户可解密", "DPAPI-encrypted; only this account on this PC can decrypt it");
-                Add("它防的是密码明文落盘与被云同步，不能对抗以你的身份运行的程序。",
-                    "That prevents the password hitting disk in plain text or syncing to the cloud; it does not defend against programs running as you.");
                 Add("点「启动桌面」即可自动完成配置（需要一次管理员授权）。",
                     "Press Start desktop and it configures itself (one administrator approval).");
                 Add("RPC 服务器不可用 —— 子会话监听器未启动（配置后需重启电脑）",
@@ -763,10 +689,6 @@ namespace ParaDesk.Core
                     "Can't connect: the Remote Desktop listener isn't enabled. Restart the PC and try again.");
                 Add("1. 系统配置尚未完成，或配置后尚未重启电脑；",
                     "1. System setup hasn't finished, or the PC hasn't been restarted since;");
-                Add("通常不需要——启动桌面时的那次配置已启用免密登录策略",
-                    "Usually unnecessary — the setup done when starting the desktop already enabled passwordless sign-in");
-                Add("家庭版不含子会话功能。第一次启动桌面时需要一次管理员授权，之后日常使用无需提权。",
-                    "Home edition has no child sessions. Starting the desktop the first time needs one administrator approval; everyday use afterwards does not.");
         }
     }
 }
