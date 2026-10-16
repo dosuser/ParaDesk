@@ -29,6 +29,12 @@ namespace ParaDesk.Core
 
         public static bool Exists { get { return File.Exists(FilePath); } }
 
+        internal static bool CanKeepPassword(bool hasSaved, string savedUser, string user)
+        {
+            return hasSaved && !string.IsNullOrEmpty(savedUser) &&
+                string.Equals(savedUser, user, StringComparison.Ordinal);
+        }
+
         public static bool Save(string userName, string password)
         {
             try

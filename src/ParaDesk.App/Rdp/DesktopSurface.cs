@@ -11,6 +11,7 @@ namespace ParaDesk.Rdp
     {
         Idle,
         Connecting,
+        LoggingIn,
         Connected,
         Reconnecting,
         Closing,
@@ -171,7 +172,7 @@ namespace ParaDesk.Rdp
                 Font = new Font("Microsoft YaHei UI", 12F),
                 Location = new Point(48, 48),
                 Text = L.T("正在连接分身桌面……") + "\r\n" +
-                       L.T("首次连接会为你的账户建立第二个登录，可能需要一两分钟。"),
+                       L.T("首次登录可能需要一两分钟。"),
             };
             Controls.Add(_overlayText);
 
@@ -638,6 +639,7 @@ namespace ParaDesk.Rdp
 
         private void OnRdpConnected(object sender, EventArgs e)
         {
+            if (ClosingStarted) return;
             _everConnected = true;
             if (ConnectedAt == null) ConnectedAt = DateTime.Now;
             if (_authWarningVisible)
@@ -645,7 +647,7 @@ namespace ParaDesk.Rdp
                 _authWarningVisible = false;
                 ApplyTopMost();
             }
-            SetState(SurfaceState.Connected);
+            SetState(_loggedIn ? SurfaceState.Connected : SurfaceState.LoggingIn);
             ShowBanner(null);
             if (!_closePending) _watchdog.Stop();
             Log.Info("分身桌面已连接");
@@ -657,6 +659,7 @@ namespace ParaDesk.Rdp
             _hasLogonError = false;
             Log.Info("分身桌面登录完成");
             if (ClosingStarted) return;
+            SetState(SurfaceState.Connected);
             // 动态分辨率只有完全登录后才可靠，且需要再等一会儿；这里统一延迟应用
             _loginSettle.Stop();
             _loginSettle.Start();
@@ -679,7 +682,8 @@ namespace ParaDesk.Rdp
 
         private void OnRdpReconnected(object sender, EventArgs e)
         {
-            SetState(SurfaceState.Connected);
+            if (ClosingStarted) return;
+            SetState(_loggedIn ? SurfaceState.Connected : SurfaceState.LoggingIn);
             ShowBanner(null);   // 否则重连提示会永久盖在恢复后的画面上
             _remoteWidth = 0; _remoteHeight = 0;
             _appliedDesktopScale = 0; _appliedDeviceScale = 0;

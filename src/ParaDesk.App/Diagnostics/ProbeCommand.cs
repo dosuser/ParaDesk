@@ -97,7 +97,8 @@ namespace ParaDesk.Diagnostics
                 ChildSessionId = r.ChildSessionId == 0xFFFFFFFF ? -1 : (long)r.ChildSessionId,
                 TransportStatus = r.TransportStatus,
                 TransportStatusHex = "0x" + r.TransportStatus.ToString("X8"),
-                TransportDescription = SystemStatus.DescribeTransportError(r.TransportStatus),
+                TransportDescription = r.HasExistingSession ? L.T("已建立（桌面运行中）") : SystemStatus.DescribeTransportError(r.TransportStatus),
+                TransportProbed = r.TransportProbed,
                 TransportPipe = r.TransportPipe,
                 TransportReady = r.TransportReady,
                 ReadyToStart = r.ReadyToStart,
@@ -183,6 +184,7 @@ namespace ParaDesk.Diagnostics
             [DataMember(Name = "transportDescription", Order = 13)] public string TransportDescription;
             [DataMember(Name = "transportPipe", Order = 14)] public string TransportPipe;
             [DataMember(Name = "transportReady", Order = 15)] public bool TransportReady;
+            [DataMember(Name = "transportProbed", Order = 30)] public bool TransportProbed;
             [DataMember(Name = "readyToStart", Order = 16)] public bool ReadyToStart;
             [DataMember(Name = "blocked", Order = 17)] public bool Blocked;
             [DataMember(Name = "needsSetup", Order = 18)] public bool NeedsSetup;

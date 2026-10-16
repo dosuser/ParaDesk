@@ -170,7 +170,7 @@ namespace ParaDesk.Shell
             AddCheck(L.T("远程桌面监听器"), env.RdpListenerEnabled, false, L.T("已启用"), L.T("启动桌面时自动启用"));
             AddCheck(L.T("远程桌面服务"), env.TermServiceRunning, false, L.T("运行中"), L.T("启动桌面时自动启动"));
             AddCheck(L.T("子会话通道"), env.TransportReady, false, L.T("可用"),
-                L.T("配置完成后需重启电脑一次才会就绪"));
+                env.NextAction ?? SystemStatus.DescribeTransportError(env.TransportStatus));
 
             // 已经就绪的机器不必看"要改什么"——那张卡只在还需要配置时才有意义
             SetupPlanCard.Visibility = env.ReadyToStart || env.Blocked
@@ -193,8 +193,8 @@ namespace ParaDesk.Shell
             else
             {
                 CheckBar.Severity = global::Wpf.Ui.Controls.InfoBarSeverity.Informational;
-                CheckBar.Title = L.T("有几项需要配置");
-                CheckBar.Message = L.T("不用在这里操作——第一次点「启动桌面」时会一次性配置好，只需一次管理员授权。");
+                CheckBar.Title = env.NeedsSetup ? L.T("有几项需要配置") : L.T("尚未就绪");
+                CheckBar.Message = env.NeedsSetup ? L.T("点「启动桌面」自动配置，需要管理员授权。") : env.NextAction;
             }
         }
 

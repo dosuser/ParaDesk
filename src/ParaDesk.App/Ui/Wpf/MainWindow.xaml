@@ -17,6 +17,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -26,7 +27,13 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
 
-        <Grid Grid.Row="1">
+        <Grid x:Name="SaveFailurePanel" Grid.Row="1" Margin="16,0,16,8" Visibility="Collapsed">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <ui:InfoBar IsOpen="True" IsClosable="False" Severity="Warning" Title="设置未保存"
+                Message="当前更改仅本次有效，请重试保存。"/>
+            <ui:Button Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" Content="重试保存" Click="OnRetrySave"/>
+        </Grid>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
@@ -36,35 +43,35 @@
             <Border Grid.Column="0" Margin="8,0,0,8">
                 <StackPanel x:Name="NavPanel" Margin="4">
                     <RadioButton x:Name="NavDesktop" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Desktop24"
-                                 Tag="Desktop" IsChecked="True" Checked="OnNavChecked" Content="桌面"/>
+                        local:Nav.Icon="Desktop24"
+                        Tag="Desktop" IsChecked="True" Checked="OnNavChecked" Content="桌面"/>
                     <RadioButton x:Name="NavDisplay" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Resize24"
-                                 Tag="Display" Checked="OnNavChecked" Content="画面"/>
+                        local:Nav.Icon="Resize24"
+                        Tag="Display" Checked="OnNavChecked" Content="画面"/>
                     <RadioButton x:Name="NavInput" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="ArrowSwap24"
-                                 Tag="Input" Checked="OnNavChecked" Content="输入与共享"/>
+                        local:Nav.Icon="ArrowSwap24"
+                        Tag="Input" Checked="OnNavChecked" Content="输入与共享"/>
                     <RadioButton x:Name="NavRecord" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Record24"
-                                 Tag="Record" Checked="OnNavChecked" Content="录制"/>
+                        local:Nav.Icon="Record24"
+                        Tag="Record" Checked="OnNavChecked" Content="录制"/>
                     <RadioButton x:Name="NavHotkeys" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Keyboard24"
-                                 Tag="Hotkeys" Checked="OnNavChecked" Content="热键"/>
+                        local:Nav.Icon="Keyboard24"
+                        Tag="Hotkeys" Checked="OnNavChecked" Content="热键"/>
                     <Separator Margin="10,8,10,8" Opacity="0.25"/>
                     <RadioButton x:Name="NavSettings" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Settings24"
-                                 Tag="Settings" Checked="OnNavChecked" Content="设置"/>
+                        local:Nav.Icon="Settings24"
+                        Tag="Settings" Checked="OnNavChecked" Content="设置"/>
                     <RadioButton x:Name="NavDiag" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Stethoscope24"
-                                 Tag="Diag" Checked="OnNavChecked" Content="诊断"/>
+                        local:Nav.Icon="Stethoscope24"
+                        Tag="Diag" Checked="OnNavChecked" Content="诊断"/>
                     <RadioButton x:Name="NavAbout" Style="{StaticResource NavItemStyle}"
-                                 local:Nav.Icon="Info24"
-                                 Tag="About" Checked="OnNavChecked" Content="关于"/>
+                        local:Nav.Icon="Info24"
+                        Tag="About" Checked="OnNavChecked" Content="关于"/>
                 </StackPanel>
             </Border>
 
             <ScrollViewer x:Name="PageScroller" Grid.Column="1"
-                          VerticalScrollBarVisibility="Auto" Padding="20,0,20,20">
+                VerticalScrollBarVisibility="Auto" Padding="20,0,20,20">
                 <StackPanel>
 
                     <!-- ============================ 桌面 ============================ -->
@@ -74,7 +81,7 @@
                         <ui:Card Margin="0,0,0,14">
                             <StackPanel>
                                 <!-- 三列 Grid 而不是横向 StackPanel：后者给子元素无限宽度，
-                                     TextWrapping 永远不生效，长句会直接被卡片右边裁掉 -->
+                                TextWrapping 永远不生效，长句会直接被卡片右边裁掉 -->
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -82,37 +89,37 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Border x:Name="StatusIconBg" Grid.Column="0"
-                                            Width="46" Height="46"
-                                            CornerRadius="23" Background="#22808080"
-                                            VerticalAlignment="Center">
+                                        Width="46" Height="46"
+                                        CornerRadius="23" Background="#22808080"
+                                        VerticalAlignment="Center">
                                         <ui:SymbolIcon x:Name="StatusIcon" Symbol="Desktop24"
-                                                       FontSize="24"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
+                                            FontSize="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" Margin="14,0,12,0"
-                                                VerticalAlignment="Center">
+                                        VerticalAlignment="Center">
                                         <TextBlock x:Name="StatusTitle" FontSize="19"
-                                                   FontWeight="SemiBold" TextWrapping="Wrap"
-                                                   Text="未启动"/>
+                                            FontWeight="SemiBold" TextWrapping="Wrap"
+                                            Text="未启动"/>
                                         <TextBlock x:Name="StatusDetail" Margin="0,3,0,0"
-                                                   TextWrapping="Wrap" Opacity="0.75"
-                                                   Text="正在检查环境…"/>
+                                            TextWrapping="Wrap" Opacity="0.75"
+                                            Text="正在检查环境…"/>
                                     </StackPanel>
                                     <Border x:Name="StatusBadge" Grid.Column="2"
-                                            VerticalAlignment="Top" CornerRadius="11"
-                                            Padding="11,3" Background="#22808080">
-                                        <TextBlock x:Name="StatusBadgeText" FontSize="12"
-                                                   FontWeight="SemiBold" Text="未启动"/>
+                                        VerticalAlignment="Top" CornerRadius="11"
+                                        Padding="11,3" Background="#22808080">
+                                        <TextBlock TextWrapping="Wrap" x:Name="StatusBadgeText" FontSize="12"
+                                            FontWeight="SemiBold" Text="未启动"/>
                                     </Border>
                                 </Grid>
 
                                 <ProgressBar x:Name="StatusProgress" Height="3" Margin="0,14,0,0"
-                                             IsIndeterminate="True" Visibility="Collapsed"/>
+                                    IsIndeterminate="True" Visibility="Collapsed"/>
 
                                 <Border x:Name="MetricsPanel" Margin="0,14,0,0" Visibility="Collapsed"
-                                        CornerRadius="6" Padding="0,12,0,12"
-                                        Background="{DynamicResource SubtleFillColorSecondaryBrush}">
+                                    CornerRadius="6" Padding="0,12,0,12"
+                                    Background="{DynamicResource SubtleFillColorSecondaryBrush}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -124,34 +131,34 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock x:Name="MetricUptime" HorizontalAlignment="Center"
-                                                       FontSize="17" FontWeight="SemiBold" Text="—"/>
-                                            <TextBlock HorizontalAlignment="Center" FontSize="11"
-                                                       Opacity="0.65" Margin="0,2,0,0" Text="运行时长"/>
+                                            <TextBlock TextWrapping="Wrap" x:Name="MetricUptime" HorizontalAlignment="Center"
+                                                FontSize="17" FontWeight="SemiBold" Text="—"/>
+                                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="11"
+                                                Opacity="0.65" Margin="0,2,0,0" Text="运行时长"/>
                                         </StackPanel>
                                         <Rectangle Grid.Column="1" Width="1" Margin="6,4,6,4"
-                                                   Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+                                            Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock x:Name="MetricResolution" HorizontalAlignment="Center"
-                                                       FontSize="17" FontWeight="SemiBold" Text="—"/>
-                                            <TextBlock HorizontalAlignment="Center" FontSize="11"
-                                                       Opacity="0.65" Margin="0,2,0,0" Text="分辨率"/>
+                                            <TextBlock TextWrapping="Wrap" x:Name="MetricResolution" HorizontalAlignment="Center"
+                                                FontSize="17" FontWeight="SemiBold" Text="—"/>
+                                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="11"
+                                                Opacity="0.65" Margin="0,2,0,0" Text="分辨率"/>
                                         </StackPanel>
                                         <Rectangle Grid.Column="3" Width="1" Margin="6,4,6,4"
-                                                   Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+                                            Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
                                         <StackPanel Grid.Column="4">
-                                            <TextBlock x:Name="MetricMonitor" HorizontalAlignment="Center"
-                                                       FontSize="17" FontWeight="SemiBold" Text="—"/>
-                                            <TextBlock HorizontalAlignment="Center" FontSize="11"
-                                                       Opacity="0.65" Margin="0,2,0,0" Text="显示位置"/>
+                                            <TextBlock TextWrapping="Wrap" x:Name="MetricMonitor" HorizontalAlignment="Center"
+                                                FontSize="17" FontWeight="SemiBold" Text="—"/>
+                                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="11"
+                                                Opacity="0.65" Margin="0,2,0,0" Text="显示位置"/>
                                         </StackPanel>
                                         <Rectangle Grid.Column="5" Width="1" Margin="6,4,6,4"
-                                                   Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+                                            Fill="{DynamicResource ControlStrokeColorDefaultBrush}"/>
                                         <StackPanel Grid.Column="6">
-                                            <TextBlock x:Name="MetricSession" HorizontalAlignment="Center"
-                                                       FontSize="17" FontWeight="SemiBold" Text="—"/>
-                                            <TextBlock HorizontalAlignment="Center" FontSize="11"
-                                                       Opacity="0.65" Margin="0,2,0,0" Text="会话 ID"/>
+                                            <TextBlock TextWrapping="Wrap" x:Name="MetricSession" HorizontalAlignment="Center"
+                                                FontSize="17" FontWeight="SemiBold" Text="—"/>
+                                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="11"
+                                                Opacity="0.65" Margin="0,2,0,0" Text="会话 ID"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -164,17 +171,17 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <ui:InfoBar x:Name="NoticeBar" Grid.Column="0" IsOpen="True"
-                                        IsClosable="False" Severity="Informational"
-                                        Title="" Message=""/>
+                                IsClosable="False" Severity="Informational"
+                                Title="" Message=""/>
                             <ui:Button x:Name="BtnNoticeDismiss" Grid.Column="1" Margin="10,0,0,0"
-                                       VerticalAlignment="Center"
-                                       Icon="{ui:SymbolIcon CheckmarkCircle24}"
-                                       Content="知道了" Click="OnDismissNotice"/>
+                                VerticalAlignment="Center"
+                                Icon="{ui:SymbolIcon CheckmarkCircle24}"
+                                Content="知道了" Click="OnDismissNotice"/>
                         </Grid>
 
                         <!-- 主操作紧跟状态，永远不需要滚动。
-                             没有独立的「首次配置」按钮：需要配置时「启动桌面」会自己弹一次授权，
-                             用户只需要知道"我要开一个分身桌面"这一件事 -->
+                        没有独立的「首次配置」按钮：需要配置时「启动桌面」会自己弹一次授权，
+                        用户只需要知道"我要开一个分身桌面"这一件事 -->
                         <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
@@ -182,61 +189,62 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <ui:Button x:Name="BtnPrimary" Grid.Column="0" HorizontalAlignment="Stretch"
-                                       Height="44" Appearance="Primary" Icon="{ui:SymbolIcon Play24}"
-                                       Content="启动桌面" Click="OnPrimary"/>
+                                Height="44" Appearance="Primary" Icon="{ui:SymbolIcon Play24}"
+                                Content="启动桌面" Click="OnPrimary"/>
                             <ui:Button x:Name="BtnClose" Grid.Column="2" HorizontalAlignment="Stretch"
-                                       Height="44" Icon="{ui:SymbolIcon Dismiss24}"
-                                       Content="关闭桌面" Click="OnCloseDesktop"/>
+                                Height="44" Icon="{ui:SymbolIcon Dismiss24}"
+                                Content="关闭桌面" Click="OnCloseDesktop"/>
                         </Grid>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Eye24}" Margin="0,0,0,18">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="仅查看" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="仅查看" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="ViewOnlyQuickHint"
-                                               Text="你的键鼠不会作用到分身桌面；AI 注入的操作不受影响"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                        Text="不接收你的键鼠操作；程序注入不受影响"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwViewOnlyQuick" Checked="OnViewOnly" Unchecked="OnViewOnly"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="仅查看" x:Name="SwViewOnlyQuick" Checked="OnViewOnly" Unchecked="OnViewOnly"/>
                         </ui:CardControl>
 
                         <!-- 显示位置 -->
-                        <Grid Margin="2,0,0,8">
+                        <StackPanel Margin="2,0,0,8">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="显示位置" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock TextWrapping="Wrap" Text="显示位置" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 <ui:Button Margin="10,0,0,0" Padding="10,3" FontSize="12"
-                                           Icon="{ui:SymbolIcon NumberSymbol24}"
-                                           Content="识别屏幕" ToolTip="在每块显示器上显示编号"
-                                           Click="OnIdentify"/>
+                                    Icon="{ui:SymbolIcon NumberSymbol24}"
+                                    Content="识别屏幕" ToolTip="在每块显示器上显示编号"
+                                    Click="OnIdentify"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBlock Text="方案" VerticalAlignment="Center"
-                                           Opacity="0.7" Margin="0,0,8,0"/>
-                                <ComboBox x:Name="CbProfile" Width="170" VerticalAlignment="Center"
-                                          SelectionChanged="OnProfileSwitched"/>
-                                <ui:Button x:Name="BtnProfileAdd" Margin="6,0,0,0" Padding="8,4"
-                                           Icon="{ui:SymbolIcon Add24}" ToolTip="另存为新方案"
-                                           Click="OnProfileAdd"/>
-                                <ui:Button x:Name="BtnProfileDel" Margin="4,0,0,0" Padding="8,4"
-                                           Icon="{ui:SymbolIcon Delete24}" ToolTip="删除当前方案"
-                                           Click="OnProfileDelete"/>
-                            </StackPanel>
-                        </Grid>
+                            <WrapPanel Margin="0,8,0,0">
+                                <TextBlock TextWrapping="Wrap" Text="方案" VerticalAlignment="Center"
+                                    Opacity="0.7" Margin="0,0,8,0"/>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="方案" x:Name="CbProfile" Width="170" VerticalAlignment="Center"
+                                    SelectionChanged="OnProfileSwitched"/>
+                                <ui:Button AutomationProperties.Name="另存为新方案" x:Name="BtnProfileAdd" Margin="6,0,0,0" Padding="8,4"
+                                    Icon="{ui:SymbolIcon Add24}" ToolTip="另存为新方案"
+                                    Click="OnProfileAdd"/>
+                                <ui:Button AutomationProperties.Name="重命名方案" Margin="4,0,0,0" Padding="8,4" Icon="{ui:SymbolIcon Rename24}" ToolTip="重命名方案" Click="OnProfileRename"/>
+                                <ui:Button AutomationProperties.Name="删除当前方案" x:Name="BtnProfileDel" Margin="4,0,0,0" Padding="8,4"
+                                    Icon="{ui:SymbolIcon Delete24}" ToolTip="删除当前方案"
+                                    Click="OnProfileDelete"/>
+                            </WrapPanel>
+                        </StackPanel>
                         <ui:Card Padding="6">
                             <local:MonitorLayoutView x:Name="LayoutView" Height="200"
-                                                     SelectionChanged="OnLayoutSelectionChanged"/>
+                                SelectionChanged="OnLayoutSelectionChanged"/>
                         </ui:Card>
 
                         <!-- 其他桌面类型：概念上与分身桌面并列，单独成节 -->
-                        <TextBlock Text="其他桌面" FontWeight="SemiBold" Margin="2,22,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="其他桌面" FontWeight="SemiBold" Margin="2,22,0,8"/>
                         <ui:CardControl Icon="{ui:SymbolIcon Cube24}">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="沙盒桌面" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="沙盒桌面" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="SandboxHint" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap"
-                                               Text="系统同时只允许一个分身桌面；需要更多隔离桌面时可用 Windows 沙盒。"/>
+                                        TextWrapping="Wrap"
+                                        Text="系统同时只允许一个分身桌面；需要更多隔离桌面时可用 Windows 沙盒。"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button x:Name="BtnSandbox" Content="启动沙盒桌面" Click="OnLaunchSandbox"/>
@@ -245,246 +253,262 @@
 
                     <!-- ============================ 画面 ============================ -->
                     <StackPanel x:Name="PageDisplay" Visibility="Collapsed">
-                        <TextBlock Text="画面" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
-                        <TextBlock Text="分身桌面开在哪块屏、以及呈现得多清晰" Opacity="0.7" Margin="0,0,0,4"/>
+                        <TextBlock TextWrapping="Wrap" Text="画面" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
+                        <TextBlock TextWrapping="Wrap" Text="显示位置与画面质量" Opacity="0.7" Margin="0,0,0,4"/>
                         <TextBlock x:Name="DisplayScopeHint" FontSize="12" Opacity="0.62"
-                                   TextWrapping="Wrap" Margin="0,0,0,14"
-                                   Text="以下设置随方案保存。"/>
+                            TextWrapping="Wrap" Margin="0,0,0,14"
+                            Text="以下设置随方案保存。"/>
 
                         <!-- 目标显示器：和「桌面」页布局图是同一个设置的两个编辑器，
-                             放在这里是因为下面的分辨率、缩放候选项全都由它决定 -->
-                        <ui:CardControl Icon="{ui:SymbolIcon Desktop24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="目标显示器" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="MonitorHint" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap"
-                                               Text="下面的分辨率与缩放按这块屏的能力列出。"/>
+                        放在这里是因为下面的分辨率、缩放候选项全都由它决定 -->
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="目标显示器" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="MonitorHint" Opacity="0.7" FontSize="12"
+                                            TextWrapping="Wrap"
+                                            Text="分辨率和缩放选项取自此屏幕。"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="CbMonitor" Width="250" MaxDropDownHeight="320"
-                                          SelectionChanged="OnMonitorPicked"/>
-                                <ui:Button x:Name="BtnRenameMonitor" Margin="8,0,0,0"
-                                           Content="重命名" Click="OnRenameMonitor"
-                                           Icon="{ui:SymbolIcon Rename24}"
-                                           ToolTip="给这块屏起个名字"/>
-                                <ui:Button Margin="8,0,0,0" Content="识别屏幕" Click="OnIdentify"
-                                           Icon="{ui:SymbolIcon NumberSymbolSquare24}"
-                                           ToolTip="在每块显示器上显示编号"/>
+                                <WrapPanel>
+                                    <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="目标显示器" x:Name="CbMonitor" Width="250" MaxDropDownHeight="320"
+                                        SelectionChanged="OnMonitorPicked"/>
+                                    <ui:Button x:Name="BtnRenameMonitor" Margin="8,0,0,0"
+                                        Content="重命名" Click="OnRenameMonitor"
+                                        Icon="{ui:SymbolIcon Rename24}"
+                                        ToolTip="给这块屏起个名字"/>
+                                    <ui:Button Margin="8,0,0,0" Content="识别屏幕" Click="OnIdentify"
+                                        Icon="{ui:SymbolIcon NumberSymbolSquare24}"
+                                        ToolTip="在每块显示器上显示编号"/>
+                                </WrapPanel>
                             </StackPanel>
-                        </ui:CardControl>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Window24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="窗口模式" FontWeight="SemiBold"/>
-                                    <TextBlock Text="运行中不可改，收起桌面后再调"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="窗口模式" FontWeight="SemiBold"/>
+                                        <TextBlock Text="收起后可修改，重新接入生效"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbWindowMode" Width="220" SelectionChanged="OnProfileChanged">
-                                <ComboBoxItem Content="全屏钉在该显示器"/>
-                                <ComboBoxItem Content="可缩放窗口"/>
-                                <ComboBoxItem Content="悬浮小窗（画中画）"/>
-                            </ComboBox>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="窗口模式" x:Name="CbWindowMode" Width="220" SelectionChanged="OnProfileChanged">
+                                    <ComboBoxItem Content="全屏钉在该显示器"/>
+                                    <ComboBoxItem Content="可缩放窗口"/>
+                                    <ComboBoxItem Content="悬浮小窗（画中画）"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon ScaleFit24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="分辨率" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="ResolutionHint"
-                                               Text="连接中即时生效，无需断开重连；选项来自目标显示器实际支持的模式"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="分辨率" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="ResolutionHint"
+                                            Text="连接时即时生效；窗口模式下可跟随窗口大小"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <!-- 宽度按英文取：中文"跟随显示器（2560 × 1600）"比
-                                 "Match monitor (2560 × 1600)" 短，按中文取会把英文截掉 -->
-                            <ComboBox x:Name="CbResolution" Width="275" MaxDropDownHeight="320"
-                                      SelectionChanged="OnProfileChanged"/>
-                        </ui:CardControl>
+                                <!-- 宽度按英文取：中文"跟随显示器（2560 × 1600）"比
+                                "Match monitor (2560 × 1600)" 短，按中文取会把英文截掉 -->
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="分辨率" x:Name="CbResolution" Width="275" MaxDropDownHeight="320"
+                                    SelectionChanged="OnProfileChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon TextFontSize24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="缩放" FontWeight="SemiBold"/>
-                                    <TextBlock Text="运行中不可改"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="缩放" FontWeight="SemiBold"/>
+                                        <TextBlock Text="收起后可修改，重新接入生效"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbScale" Width="220" SelectionChanged="OnProfileChanged">
-                                <ComboBoxItem Content="自动（跟随显示器）"/>
-                                <ComboBoxItem Content="100%"/>
-                                <ComboBoxItem Content="125%"/>
-                                <ComboBoxItem Content="150%"/>
-                                <ComboBoxItem Content="175%"/>
-                                <ComboBoxItem Content="200%"/>
-                                <ComboBoxItem Content="250%"/>
-                                <ComboBoxItem Content="300%"/>
-                            </ComboBox>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="缩放" x:Name="CbScale" Width="220" SelectionChanged="OnProfileChanged">
+                                    <ComboBoxItem Content="自动（跟随显示器）"/>
+                                    <ComboBoxItem Content="100%"/>
+                                    <ComboBoxItem Content="125%"/>
+                                    <ComboBoxItem Content="150%"/>
+                                    <ComboBoxItem Content="175%"/>
+                                    <ComboBoxItem Content="200%"/>
+                                    <ComboBoxItem Content="250%"/>
+                                    <ComboBoxItem Content="300%"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </ui:Card>
 
                         <!-- 帧率必须和上面几张按方案的卡片拉开距离。
-                             它写在 HKLM，是整机单值；和 per-profile 的下拉并排、长得一模一样，
-                             位置本身就在暗示错误的作用域 -->
-                        <TextBlock Text="全局设置" FontWeight="SemiBold" Margin="2,22,0,4"/>
-                        <TextBlock Text="下面这项由 Windows 统一管理，不属于任何方案或显示器，改一次整台电脑生效。"
-                                   FontSize="12" Opacity="0.62" TextWrapping="Wrap" Margin="2,0,0,8"/>
+                        它写在 HKLM，是整机单值；和 per-profile 的下拉并排、长得一模一样，
+                        位置本身就在暗示错误的作用域 -->
+                        <TextBlock TextWrapping="Wrap" Text="全局设置" FontWeight="SemiBold" Margin="2,22,0,4"/>
+                        <TextBlock Text="对整台电脑生效，不随方案保存。"
+                            FontSize="12" Opacity="0.62" TextWrapping="Wrap" Margin="2,0,0,8"/>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon TopSpeed24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="帧率上限" FontWeight="SemiBold"/>
-                                        <Border Margin="8,0,0,0" CornerRadius="8" Padding="7,1"
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock TextWrapping="Wrap" Text="帧率上限" FontWeight="SemiBold"/>
+                                            <Border Margin="8,0,0,0" CornerRadius="8" Padding="7,1"
                                                 VerticalAlignment="Center"
                                                 Background="{DynamicResource SubtleFillColorTertiaryBrush}">
-                                            <TextBlock Text="全系统" FontSize="11" Opacity="0.8"/>
-                                        </Border>
+                                                <TextBlock TextWrapping="Wrap" Text="全系统" FontSize="11" Opacity="0.8"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="默认 30 FPS。需要管理员授权，重启电脑后生效。"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                     </StackPanel>
-                                    <TextBlock Text="默认 30 FPS。需要管理员授权，重启电脑后生效。"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <!-- 必须有独立的「应用」按钮：这是要提权的整机改动，
-                                 挂在 SelectionChanged 上意味着用键盘划过下拉就会连弹几次
-                                 UAC、连写几次注册表 -->
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="CbFps" Width="270" MaxDropDownHeight="320"
-                                          SelectionChanged="OnFpsSelectionChanged"/>
-                                <ui:Button x:Name="BtnApplyFps" Margin="8,0,0,0" Content="应用"
-                                           IsEnabled="False" Click="OnApplyFps"
-                                           Icon="{ui:SymbolIcon ShieldCheckmark24}"
-                                           ToolTip="需要一次管理员授权"/>
+                                <!-- 必须有独立的「应用」按钮：这是要提权的整机改动，
+                                挂在 SelectionChanged 上意味着用键盘划过下拉就会连弹几次
+                                UAC、连写几次注册表 -->
+                                <WrapPanel>
+                                    <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="帧率上限" x:Name="CbFps" Width="270" MaxDropDownHeight="320"
+                                        SelectionChanged="OnFpsSelectionChanged"/>
+                                    <ui:Button x:Name="BtnApplyFps" Margin="8,0,0,0" Content="应用"
+                                        IsEnabled="False" Click="OnApplyFps"
+                                        Icon="{ui:SymbolIcon ShieldCheckmark24}"
+                                        ToolTip="需要一次管理员授权"/>
+                                </WrapPanel>
                             </StackPanel>
-                        </ui:CardControl>
+                        </ui:Card>
 
                     </StackPanel>
 
                     <!-- ======================= 输入与共享 ======================= -->
                     <StackPanel x:Name="PageInput" Visibility="Collapsed">
-                        <TextBlock Text="输入与共享" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
-                        <TextBlock Text="键鼠归谁、以及与主桌面之间怎么协作" Opacity="0.7" Margin="0,0,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="输入与共享" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
+                        <TextBlock TextWrapping="Wrap" Text="键鼠输入与桌面共享" Opacity="0.7" Margin="0,0,0,14"/>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Eye24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="仅查看" FontWeight="SemiBold"/>
-                                    <TextBlock Text="你的键鼠不会作用到分身桌面；AI 注入的操作不受影响"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="仅查看" FontWeight="SemiBold"/>
+                                    <TextBlock Text="不接收你的键鼠操作；程序注入不受影响"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwViewOnly" Checked="OnViewOnly" Unchecked="OnViewOnly"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="仅查看" x:Name="SwViewOnly" Checked="OnViewOnly" Unchecked="OnViewOnly"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Pin24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="窗口置顶" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="窗口置顶" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwTopMost" Checked="OnTopMost" Unchecked="OnTopMost"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="窗口置顶" x:Name="SwTopMost" Checked="OnTopMost" Unchecked="OnTopMost"/>
                         </ui:CardControl>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon ClipboardPaste24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="剪贴板" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="ClipHint" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap"
-                                               Text="系统默认与主桌面共享；手动模式可避免两边互相覆盖"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="剪贴板" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="ClipHint" Opacity="0.7" FontSize="12"
+                                            TextWrapping="Wrap"
+                                            Text="默认与主桌面共享；收起后可修改"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbClipboard" Width="220" SelectionChanged="OnClipboardMode">
-                                <ComboBoxItem Content="共享（默认）"/>
-                                <ComboBoxItem Content="手动同步"/>
-                                <ComboBoxItem Content="不共享"/>
-                            </ComboBox>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="剪贴板" x:Name="CbClipboard" Width="220" SelectionChanged="OnClipboardMode">
+                                    <ComboBoxItem Content="共享（默认）"/>
+                                    <ComboBoxItem Content="手动同步"/>
+                                    <ComboBoxItem Content="不共享"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </ui:Card>
 
                         <ui:Card x:Name="ClipManualPanel" Margin="0,0,0,8" Visibility="Collapsed">
                             <StackPanel Orientation="Horizontal">
                                 <ui:Button Icon="{ui:SymbolIcon ArrowDownload24}"
-                                           Content="发送到分身桌面" Click="OnClipPush"/>
+                                    Content="发送到分身桌面" Click="OnClipPush"/>
                                 <ui:Button Margin="8,0,0,0" Icon="{ui:SymbolIcon ArrowUpload24}"
-                                           Content="从分身桌面取回" Click="OnClipPull"/>
+                                    Content="从分身桌面取回" Click="OnClipPull"/>
                             </StackPanel>
                         </ui:Card>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Globe24}">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="浏览器隔离" FontWeight="SemiBold"/>
-                                    <TextBlock Text="同一份浏览器配置不能两边同开，用独立配置的快捷方式绕开"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="浏览器隔离" FontWeight="SemiBold"/>
+                                    <TextBlock Text="为分身桌面创建独立的浏览器配置"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button Content="创建快捷方式…" Click="OnCreateBrowserShortcut"/>
                         </ui:CardControl>
 
-                        <TextBlock Text="分身桌面里" FontWeight="SemiBold" Margin="2,22,0,4"/>
+                        <TextBlock TextWrapping="Wrap" Text="分身桌面里" FontWeight="SemiBold" Margin="2,22,0,4"/>
                         <TextBlock x:Name="InsideScopeHint" FontSize="12" Opacity="0.62"
-                                   TextWrapping="Wrap" Margin="2,0,0,8"
-                                   Text="以下设置随方案保存。"/>
+                            TextWrapping="Wrap" Margin="2,0,0,8"
+                            Text="以下设置随方案保存。"/>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Play24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="登录后自动运行" FontWeight="SemiBold"/>
-                                    <TextBlock Text="分身桌面每次登录时执行一次，已登录的桌面需关闭后重新启动才生效"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="登录后自动运行" FontWeight="SemiBold"/>
+                                        <TextBlock Text="每次登录执行一次；已登录的桌面需关闭后再启动"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <StackPanel Width="320">
-                                <ui:TextBox x:Name="TbStartupCmd" MaxLength="1000"
+                                <StackPanel>
+                                    <ui:TextBox AutomationProperties.Name="登录后自动运行" x:Name="TbStartupCmd" MaxLength="1000" TextWrapping="Wrap" MinHeight="64" VerticalScrollBarVisibility="Auto" AcceptsReturn="False"
+                                        TextChanged="OnStartupCmdChanged"/>
+                                    <Grid Margin="0,6,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ui:TextBox AutomationProperties.Name="工作目录" x:Name="TbStartupDir" Grid.Column="0" MaxLength="260"
                                             TextChanged="OnStartupCmdChanged"/>
-                                <Grid Margin="0,6,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ui:TextBox x:Name="TbStartupDir" Grid.Column="0" MaxLength="260"
-                                                TextChanged="OnStartupCmdChanged"/>
-                                    <ui:Button Grid.Column="1" Margin="6,0,0,0" Padding="9,4"
-                                               Icon="{ui:SymbolIcon FolderOpen24}"
-                                               ToolTip="选择工作目录" Click="OnPickStartupDir"/>
-                                </Grid>
+                                        <ui:Button AutomationProperties.Name="选择工作目录" Grid.Column="1" Margin="6,0,0,0" Padding="9,4"
+                                            Icon="{ui:SymbolIcon FolderOpen24}"
+                                            ToolTip="选择工作目录" Click="OnPickStartupDir"/>
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
-                        </ui:CardControl>
+                        </ui:Card>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Power24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="保持唤醒" FontWeight="SemiBold"/>
-                                    <TextBlock Text="阻止电脑睡眠和分身桌面因空闲而锁屏，适合让 agent 长时间无人值守地运行。对下次启动的分身桌面生效；已在运行的一般 30 秒内也会跟上。"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="保持唤醒" FontWeight="SemiBold"/>
+                                    <TextBlock Text="阻止睡眠和分身桌面空闲锁屏；运行中约 30 秒内生效"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwKeepAwake" Checked="OnKeepAwake" Unchecked="OnKeepAwake"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="保持唤醒" x:Name="SwKeepAwake" Checked="OnKeepAwake" Unchecked="OnKeepAwake"/>
                         </ui:CardControl>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Speaker224}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="分身桌面的声音" FontWeight="SemiBold"/>
-                                    <TextBlock Text="下次启动或重新接入时生效"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="分身桌面的声音" FontWeight="SemiBold"/>
+                                        <TextBlock Text="下次启动或重新接入时生效"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbDesktopAudio" Width="220"
-                                      SelectionChanged="OnDesktopAudioChanged"/>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="分身桌面的声音" x:Name="CbDesktopAudio" Width="220"
+                                    SelectionChanged="OnDesktopAudioChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
                         <ui:InfoBar x:Name="InsideBar" Margin="0,4,0,0" Visibility="Collapsed"
-                                    IsOpen="True" IsClosable="False" Severity="Warning"
-                                    Title="" Message=""/>
+                            IsOpen="True" IsClosable="False" Severity="Warning"
+                            Title="" Message=""/>
                     </StackPanel>
 
                     <!-- ============================ 录制 ============================ -->
                     <StackPanel x:Name="PageRecord" Visibility="Collapsed">
-                        <TextBlock Text="屏幕录制" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
-                        <TextBlock Text="单独录某个分身桌面窗口，或整块显示器" Opacity="0.62" Margin="0,0,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="屏幕录制" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
+                        <TextBlock TextWrapping="Wrap" Text="录制窗口或显示器" Opacity="0.62" Margin="0,0,0,14"/>
 
                         <ui:Card Margin="0,0,0,12">
                             <Grid>
@@ -494,20 +518,20 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Border x:Name="RecIconBg" Grid.Column="0"
-                                        Width="42" Height="42" CornerRadius="21"
-                                        Background="#22808080" VerticalAlignment="Center">
+                                    Width="42" Height="42" CornerRadius="21"
+                                    Background="#22808080" VerticalAlignment="Center">
                                     <ui:SymbolIcon x:Name="RecIcon" Symbol="Record24" FontSize="22"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1" Margin="14,0,12,0" VerticalAlignment="Center">
                                     <TextBlock x:Name="RecTitle" FontSize="17" FontWeight="SemiBold"
-                                               TextWrapping="Wrap" Text="未在录制"/>
+                                        TextWrapping="Wrap" Text="未在录制"/>
                                     <TextBlock x:Name="RecDetail" Margin="0,3,0,0" Opacity="0.75"
-                                               TextWrapping="Wrap" Text="选择目标后点「开始录制」。"/>
+                                        TextWrapping="Wrap" Text="选择目标后点「开始录制」。"/>
                                 </StackPanel>
-                                <TextBlock x:Name="RecElapsed" Grid.Column="2"
-                                           VerticalAlignment="Center" FontSize="26"
-                                           FontWeight="SemiBold" Text=""/>
+                                <TextBlock TextWrapping="Wrap" x:Name="RecElapsed" Grid.Column="2"
+                                    VerticalAlignment="Center" FontSize="26"
+                                    FontWeight="SemiBold" Text=""/>
                             </Grid>
                         </ui:Card>
 
@@ -519,13 +543,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <ui:Button x:Name="BtnRecStart" Grid.Column="0" Height="44"
-                                       HorizontalAlignment="Stretch" Appearance="Primary"
-                                       Icon="{ui:SymbolIcon Record24}" Content="开始录制"
-                                       Click="OnStartRecording"/>
+                                HorizontalAlignment="Stretch" Appearance="Primary"
+                                Icon="{ui:SymbolIcon Record24}" Content="开始录制"
+                                Click="OnStartRecording"/>
                             <ui:Button x:Name="BtnRecStop" Grid.Column="2" Height="44"
-                                       HorizontalAlignment="Stretch" IsEnabled="False"
-                                       Icon="{ui:SymbolIcon Stop24}" Content="停止录制"
-                                       Click="OnStopRecording"/>
+                                HorizontalAlignment="Stretch" IsEnabled="False"
+                                Icon="{ui:SymbolIcon Stop24}" Content="停止录制"
+                                Click="OnStopRecording"/>
                         </Grid>
                         <Grid Margin="0,0,0,18">
                             <Grid.ColumnDefinitions>
@@ -534,443 +558,469 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <ui:Button x:Name="BtnRecPause" Grid.Column="0" Height="38"
-                                       HorizontalAlignment="Stretch" IsEnabled="False"
-                                       Icon="{ui:SymbolIcon Pause24}" Content="暂停"
-                                       Click="OnPauseRecording"/>
+                                HorizontalAlignment="Stretch" IsEnabled="False"
+                                Icon="{ui:SymbolIcon Pause24}" Content="暂停"
+                                Click="OnPauseRecording"/>
                             <ui:Button x:Name="BtnScreenshot" Grid.Column="2" Height="38"
-                                       HorizontalAlignment="Stretch"
-                                       Icon="{ui:SymbolIcon Camera24}" Content="截图"
-                                       ToolTip="截取分身桌面窗口；没开分身桌面时截取方案所在的显示器"
-                                       Click="OnScreenshot"/>
+                                HorizontalAlignment="Stretch"
+                                Icon="{ui:SymbolIcon Camera24}" Content="截图"
+                                ToolTip="截取分身桌面窗口；没开分身桌面时截取方案所在的显示器"
+                                Click="OnScreenshot"/>
                         </Grid>
 
-                        <TextBlock Text="录制设置" FontWeight="SemiBold" Margin="2,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="录制设置" FontWeight="SemiBold" Margin="2,0,0,8"/>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Target24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="录制目标" FontWeight="SemiBold"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="录制目标" FontWeight="SemiBold"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="CbRecTarget" Width="260" MaxDropDownHeight="300"/>
-                                <ui:Button Margin="6,0,0,0" Padding="9,4"
-                                           Icon="{ui:SymbolIcon ArrowSync24}"
-                                           ToolTip="刷新目标列表" Click="OnRefreshTargets"/>
+                                <WrapPanel>
+                                    <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="录制目标" x:Name="CbRecTarget" Width="260" MaxDropDownHeight="300"/>
+                                    <ui:Button AutomationProperties.Name="刷新目标列表" Margin="6,0,0,0" Padding="9,4"
+                                        Icon="{ui:SymbolIcon ArrowSync24}"
+                                        ToolTip="刷新目标列表" Click="OnRefreshTargets"/>
+                                </WrapPanel>
                             </StackPanel>
-                        </ui:CardControl>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Speaker224}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="音频来源" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="RecAudioHint" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap" Text="系统声音或麦克风"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="音频来源" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="RecAudioHint" Opacity="0.7" FontSize="12"
+                                            TextWrapping="Wrap" Text="系统声音或麦克风"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbRecAudio" Width="220" SelectionChanged="OnRecOptionChanged">
-                                <ComboBoxItem Content="不录音频"/>
-                                <ComboBoxItem Content="系统声音"/>
-                                <ComboBoxItem Content="麦克风"/>
-                                <ComboBoxItem Content="系统声音 + 麦克风"/>
-                            </ComboBox>
-                        </ui:CardControl>
-
-                        <ui:CardControl Icon="{ui:SymbolIcon Video24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="画质" FontWeight="SemiBold"/>
-                                    <TextBlock Text="越高越清晰，文件也越大；1–5 FPS 适合长时间延时留档"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </ui:CardControl.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="CbRecFps" Width="170" SelectionChanged="OnRecOptionChanged"/>
-                                <ComboBox x:Name="CbRecBitrate" Width="140" Margin="8,0,0,0"
-                                          SelectionChanged="OnRecOptionChanged">
-                                    <ComboBoxItem Content="8 Mbps"/>
-                                    <ComboBoxItem Content="12 Mbps"/>
-                                    <ComboBoxItem Content="20 Mbps"/>
-                                    <ComboBoxItem Content="40 Mbps"/>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="音频来源" x:Name="CbRecAudio" Width="220" SelectionChanged="OnRecOptionChanged">
+                                    <ComboBoxItem Content="不录音频"/>
+                                    <ComboBoxItem Content="系统声音"/>
+                                    <ComboBoxItem Content="麦克风"/>
+                                    <ComboBoxItem Content="系统声音 + 麦克风"/>
                                 </ComboBox>
                             </StackPanel>
-                        </ui:CardControl>
+                        </ui:Card>
+
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="画质" FontWeight="SemiBold"/>
+                                        <TextBlock Text="画质越高，文件越大；1–5 FPS 适合延时录制"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <WrapPanel>
+                                    <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="录制帧率" x:Name="CbRecFps" Width="170" SelectionChanged="OnRecOptionChanged"/>
+                                    <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="录制码率" x:Name="CbRecBitrate" Width="140" Margin="8,0,0,0"
+                                        SelectionChanged="OnRecOptionChanged">
+                                        <ComboBoxItem Content="8 Mbps"/>
+                                        <ComboBoxItem Content="12 Mbps"/>
+                                        <ComboBoxItem Content="20 Mbps"/>
+                                        <ComboBoxItem Content="40 Mbps"/>
+                                    </ComboBox>
+                                </WrapPanel>
+                            </StackPanel>
+                        </ui:Card>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Cursor24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="录制鼠标指针" FontWeight="SemiBold"/>
-                                    <TextBlock Text="关闭后画面中不出现鼠标" Opacity="0.7" FontSize="12"/>
+                                    <TextBlock TextWrapping="Wrap" Text="录制鼠标指针" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="关闭后画面中不出现鼠标" Opacity="0.7" FontSize="12"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwRecCursor" Checked="OnRecOptionChanged2"
-                                             Unchecked="OnRecOptionChanged2"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="录制鼠标指针" x:Name="SwRecCursor" Checked="OnRecOptionChanged2"
+                                Unchecked="OnRecOptionChanged2"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon PlugConnected24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="随分身桌面自动录制" FontWeight="SemiBold"/>
-                                    <TextBlock Text="分身桌面连上后自动开始录它，收起或关闭时自动结束"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="随分身桌面自动录制" FontWeight="SemiBold"/>
+                                    <TextBlock Text="登录完成后开始录制，收起或关闭时停止"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwRecAuto" Checked="OnRecOptionChanged2"
-                                             Unchecked="OnRecOptionChanged2"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="随分身桌面自动录制" x:Name="SwRecAuto" Checked="OnRecOptionChanged2"
+                                Unchecked="OnRecOptionChanged2"/>
                         </ui:CardControl>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Record24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="自动分段" FontWeight="SemiBold"/>
-                                    <TextBlock Text="长时间录制按时长切成多个文件；程序意外退出时只会损失最后一段"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="自动分段" FontWeight="SemiBold"/>
+                                        <TextBlock Text="按有效录制时长分段；意外退出可能损失最后一段"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbRecSegment" Width="170" SelectionChanged="OnRecOptionChanged"/>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="自动分段" x:Name="CbRecSegment" Width="170" SelectionChanged="OnRecOptionChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
                         <ui:CardControl Icon="{ui:SymbolIcon FolderOpen24}">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="保存位置" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="保存位置" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="RecFolder" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap"/>
+                                        TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <StackPanel Orientation="Horizontal">
                                 <ui:Button Content="更改…" Click="OnPickRecFolder"/>
-                                <ui:Button Margin="6,0,0,0" Padding="9,4"
-                                           Icon="{ui:SymbolIcon FolderOpen24}"
-                                           ToolTip="打开文件夹" Click="OnOpenRecFolder"/>
+                                <ui:Button AutomationProperties.Name="打开文件夹" Margin="6,0,0,0" Padding="9,4"
+                                    Icon="{ui:SymbolIcon FolderOpen24}"
+                                    ToolTip="打开文件夹" Click="OnOpenRecFolder"/>
                             </StackPanel>
                         </ui:CardControl>
 
                         <ui:InfoBar x:Name="RecBar" Margin="0,12,0,0" IsOpen="True"
-                                    Severity="Informational" IsClosable="False"
-                                    Title="按窗口录制才能拍到分身桌面"
-                                    Message="窗口被遮挡也不影响录制内容。"/>
+                            Severity="Informational" IsClosable="False"
+                            Title="按窗口录制才能拍到分身桌面"
+                            Message="窗口被遮挡也不影响录制内容。"/>
                         <StackPanel x:Name="RecFileActions" Orientation="Horizontal"
-                                    Margin="0,8,0,0" Visibility="Collapsed">
+                            Margin="0,8,0,0" Visibility="Collapsed">
                             <ui:Button Icon="{ui:SymbolIcon DocumentText24}"
-                                       Content="打开文件" Click="OnOpenLastOutput"/>
+                                Content="打开文件" Click="OnOpenLastOutput"/>
                             <ui:Button Margin="8,0,0,0" Icon="{ui:SymbolIcon FolderOpen24}"
-                                       Content="打开所在文件夹" Click="OnRevealLastOutput"/>
+                                Content="打开所在文件夹" Click="OnRevealLastOutput"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- ============================ 热键 ============================ -->
                     <StackPanel x:Name="PageHotkeys" Visibility="Collapsed">
-                        <TextBlock Text="全局热键" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
-                        <TextBlock Text="在任何程序里都能用，不必先切回本窗口" Opacity="0.7" Margin="0,0,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="全局热键" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
+                        <TextBlock TextWrapping="Wrap" Text="在任何程序中均可使用" Opacity="0.7" Margin="0,0,0,14"/>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Desktop24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="显示 / 收起分身桌面" FontWeight="SemiBold"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="显示 / 收起分身桌面" FontWeight="SemiBold"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkToggle" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="显示 / 收起分身桌面" x:Name="HkToggle" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Eye24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="切换「仅查看」" FontWeight="SemiBold"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="切换「仅查看」" FontWeight="SemiBold"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkViewOnly" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="切换「仅查看」" x:Name="HkViewOnly" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Record24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="开始 / 停止录制" FontWeight="SemiBold"/>
-                                    <TextBlock Text="未选目标时自动录分身桌面"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="开始 / 停止录制" FontWeight="SemiBold"/>
+                                        <TextBlock Text="未选目标时自动录分身桌面"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkRecord" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="开始 / 停止录制" x:Name="HkRecord" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Camera24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="截图" FontWeight="SemiBold"/>
-                                    <TextBlock Text="截取分身桌面窗口（没开时截方案所在的显示器），存到录制的保存位置"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="截图" FontWeight="SemiBold"/>
+                                        <TextBlock Text="截取分身窗口；未打开时截取目标屏幕，保存到录制目录"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkScreenshot" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="截图" x:Name="HkScreenshot" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon Pause24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="暂停 / 继续录制" FontWeight="SemiBold"/>
-                                    <TextBlock Text="录制中才有效"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="暂停 / 继续录制" FontWeight="SemiBold"/>
+                                        <TextBlock Text="录制中才有效"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkPause" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="暂停 / 继续录制" x:Name="HkPause" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon EyeOff24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="收起分身桌面" FontWeight="SemiBold"/>
-                                    <TextBlock Text="只收起画面、不会再打开；里面的程序继续运行"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="收起分身桌面" FontWeight="SemiBold"/>
+                                        <TextBlock Text="收起画面，里面的程序继续运行"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkDetach" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="收起分身桌面" x:Name="HkDetach" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon ArrowDownload24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="把剪贴板发送到分身桌面" FontWeight="SemiBold"/>
-                                    <TextBlock Text="剪贴板设为「手动同步」时使用"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="把剪贴板发送到分身桌面" FontWeight="SemiBold"/>
+                                        <TextBlock Text="剪贴板设为「手动同步」时使用"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkPushClip" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="把剪贴板发送到分身桌面" x:Name="HkPushClip" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon ArrowUpload24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="从分身桌面取回剪贴板" FontWeight="SemiBold"/>
-                                    <TextBlock Text="剪贴板设为「手动同步」时使用"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="从分身桌面取回剪贴板" FontWeight="SemiBold"/>
+                                        <TextBlock Text="剪贴板设为「手动同步」时使用"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <local:HotkeyBox x:Name="HkPullClip" Width="260" TextWrapping="Wrap"
-                                             BindingChanged="OnHotkeyChanged"/>
-                        </ui:CardControl>
+                                <local:HotkeyBox HorizontalAlignment="Left" AutomationProperties.Name="从分身桌面取回剪贴板" x:Name="HkPullClip" Width="260" TextWrapping="Wrap"
+                                    BindingChanged="OnHotkeyChanged"/>
+                            </StackPanel>
+                        </ui:Card>
 
                         <ui:InfoBar x:Name="HotkeyBar" Margin="0,4,0,0" IsOpen="True"
-                                    Severity="Informational" IsClosable="False"
-                                    Title="点击输入框后直接按组合键"
-                                    Message="必须搭配 Ctrl / Alt / Shift / Win；按 Backspace 可清除。若提示注册失败，说明该组合已被其它程序占用。"/>
+                            Severity="Informational" IsClosable="False"
+                            Title="点击输入框后直接按组合键"
+                            Message="需搭配 Ctrl / Alt / Shift / Win；Backspace 清除。注册失败时请更换组合。"/>
                     </StackPanel>
 
                     <!-- ============================ 设置 ============================ -->
                     <StackPanel x:Name="PageSettings" Visibility="Collapsed">
-                        <TextBlock Text="设置" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
-                        <TextBlock Text="程序行为与全局选项，不随方案变化" Opacity="0.62" Margin="0,0,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="设置" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,2"/>
+                        <TextBlock TextWrapping="Wrap" Text="全局选项，不随方案变化" Opacity="0.62" Margin="0,0,0,14"/>
 
-                        <ui:CardControl Icon="{ui:SymbolIcon LocalLanguage24}" Margin="0,0,0,8">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <TextBlock Text="语言" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Language — 切换后程序会自动重启，分身桌面保持运行"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                        <ui:Card Margin="0,0,0,8">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="语言" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Language — 切换后重启程序，分身桌面继续运行"
+                                            Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                            <ComboBox x:Name="CbLanguage" Width="220" SelectionChanged="OnLanguage">
-                                <ComboBoxItem Content="跟随系统 / Auto"/>
-                                <ComboBoxItem Content="简体中文"/>
-                                <ComboBoxItem Content="English"/>
-                            </ComboBox>
-                        </ui:CardControl>
+                                <ComboBox HorizontalAlignment="Left" AutomationProperties.Name="语言" x:Name="CbLanguage" Width="220" SelectionChanged="OnLanguage">
+                                    <ComboBoxItem Content="跟随系统 / Auto"/>
+                                    <ComboBoxItem Content="简体中文"/>
+                                    <ComboBoxItem Content="English"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </ui:Card>
 
-                        <TextBlock Text="启动" FontWeight="SemiBold" Margin="2,14,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="启动" FontWeight="SemiBold" Margin="2,14,0,8"/>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Power24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="开机自动启动" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="开机自动启动" FontWeight="SemiBold"/>
                                     <TextBlock Text="登录 Windows 后自动运行 ParaDesk" Opacity="0.7" FontSize="12"
-                                               TextWrapping="Wrap"/>
+                                        TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwStartup" Checked="OnStartup" Unchecked="OnStartup"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="开机自动启动" x:Name="SwStartup" Checked="OnStartup" Unchecked="OnStartup"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon ArrowMinimize24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="启动时最小化到托盘" FontWeight="SemiBold"/>
-                                    <TextBlock Text="开机自启时不弹出主窗口，只在托盘运行"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="启动时最小化到托盘" FontWeight="SemiBold"/>
+                                    <TextBlock Text="开机自启时仅显示托盘图标"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwStartMinimized" Checked="OnStartMinimized"
-                                             Unchecked="OnStartMinimized"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="启动时最小化到托盘" x:Name="SwStartMinimized" Checked="OnStartMinimized"
+                                Unchecked="OnStartMinimized"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Play24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="程序启动后自动开启分身桌面" FontWeight="SemiBold"/>
-                                    <TextBlock Text="环境就绪时自动启动；分身桌面已在后台运行时自动重新接入。配合开机自启，开机后即可交给 agent 使用"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="程序启动后自动开启分身桌面" FontWeight="SemiBold"/>
+                                    <TextBlock Text="环境就绪时自动启动，已有桌面则重新接入"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwAutoStartDesktop" Checked="OnAppBehaviorChanged"
-                                             Unchecked="OnAppBehaviorChanged"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="程序启动后自动开启分身桌面" x:Name="SwAutoStartDesktop" Checked="OnAppBehaviorChanged"
+                                Unchecked="OnAppBehaviorChanged"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Globe24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="启动时检查更新" FontWeight="SemiBold"/>
-                                    <TextBlock Text="每次启动时访问 GitHub 查询新版本；除此之外本程序不联网"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="启动时检查更新" FontWeight="SemiBold"/>
+                                    <TextBlock Text="启动时访问 GitHub 查询新版本"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwCheckUpdates" Checked="OnAppBehaviorChanged"
-                                             Unchecked="OnAppBehaviorChanged"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="启动时检查更新" x:Name="SwCheckUpdates" Checked="OnAppBehaviorChanged"
+                                Unchecked="OnAppBehaviorChanged"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon ArrowMinimize24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="关闭主窗口时最小化到托盘" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="关闭主窗口时最小化到托盘" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwTray" Checked="OnTray" Unchecked="OnTray"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="关闭主窗口时最小化到托盘" x:Name="SwTray" Checked="OnTray" Unchecked="OnTray"/>
                         </ui:CardControl>
 
-                        <TextBlock Text="分身桌面" FontWeight="SemiBold" Margin="2,14,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="分身桌面" FontWeight="SemiBold" Margin="2,14,0,8"/>
 
                         <ui:CardControl Icon="{ui:SymbolIcon PlugConnected24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="画面意外断开时自动重新接入" FontWeight="SemiBold"/>
-                                    <TextBlock Text="分身桌面还在运行、只是画面断了（例如远程桌面服务重启）时，自动把画面接回来"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="画面意外断开时自动重新接入" FontWeight="SemiBold"/>
+                                    <TextBlock Text="桌面仍在运行时，自动恢复意外断开的画面"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwAutoReattach" Checked="OnAppBehaviorChanged"
-                                             Unchecked="OnAppBehaviorChanged"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="画面意外断开时自动重新接入" x:Name="SwAutoReattach" Checked="OnAppBehaviorChanged"
+                                Unchecked="OnAppBehaviorChanged"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Warning24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="关闭桌面前确认" FontWeight="SemiBold"/>
-                                    <TextBlock Text="「关闭桌面」会注销分身桌面、结束里面的所有程序，先确认一次"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="关闭桌面前确认" FontWeight="SemiBold"/>
+                                    <TextBlock Text="关闭会注销分身桌面并结束其中所有程序"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwConfirmClose" Checked="OnAppBehaviorChanged"
-                                             Unchecked="OnAppBehaviorChanged"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="关闭桌面前确认" x:Name="SwConfirmClose" Checked="OnAppBehaviorChanged"
+                                Unchecked="OnAppBehaviorChanged"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Power24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="关机时自动注销分身桌面" FontWeight="SemiBold"/>
-                                    <TextBlock Text="关机或重启前先注销，让里面的程序有机会正常退出、保存"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="关机时自动注销分身桌面" FontWeight="SemiBold"/>
+                                    <TextBlock Text="关机或重启前注销分身桌面，供程序正常退出"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
-                            <ui:ToggleSwitch x:Name="SwLogoffOnShutdown" Checked="OnAppBehaviorChanged"
-                                             Unchecked="OnAppBehaviorChanged"/>
+                            <ui:ToggleSwitch AutomationProperties.Name="关机时自动注销分身桌面" x:Name="SwLogoffOnShutdown" Checked="OnAppBehaviorChanged"
+                                Unchecked="OnAppBehaviorChanged"/>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon Key24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="登录凭据" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="CredHint" Text="通常不需要——启动桌面时的那次配置已启用免密登录策略"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="登录凭据" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="CredHint" Text="通常无需保存；登录失败时可手动设置"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button Content="管理…" Click="OnCredentials"/>
                         </ui:CardControl>
 
-                        <TextBlock Text="AI 工具" FontWeight="SemiBold" Margin="2,14,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="AI 工具" FontWeight="SemiBold" Margin="2,14,0,8"/>
 
                         <ui:CardControl Icon="{ui:SymbolIcon PlugConnected24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="AI 工具集成" FontWeight="SemiBold"/>
-                                    <TextBlock Text="分身桌面里的 agent 可以用命令行通知你（--notify）、查询状态（--status）。按钮会把现成的配置或命令复制到剪贴板。"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="AI 工具集成" FontWeight="SemiBold"/>
+                                    <TextBlock Text="支持命令行通知（--notify）和状态查询（--status）"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <StackPanel>
                                 <ui:Button HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon ClipboardPaste24}"
-                                           Content="复制 Claude Code 通知配置" Click="OnCopyClaudeHooks"/>
+                                    Content="复制 Claude Code 通知配置" Click="OnCopyClaudeHooks"/>
                                 <ui:Button HorizontalAlignment="Stretch" Margin="0,6,0,0"
-                                           Icon="{ui:SymbolIcon ClipboardPaste24}"
-                                           Content="复制命令行用法" Click="OnCopyCliUsage"/>
+                                    Icon="{ui:SymbolIcon ClipboardPaste24}"
+                                    Content="复制命令行用法" Click="OnCopyCliUsage"/>
                             </StackPanel>
                         </ui:CardControl>
 
                         <ui:InfoBar x:Name="AiBar" Margin="0,0,0,8" Visibility="Collapsed"
-                                    IsOpen="True" IsClosable="False" Severity="Success"
-                                    Title="" Message=""/>
+                            IsOpen="True" IsClosable="False" Severity="Success"
+                            Title="" Message=""/>
                     </StackPanel>
 
                     <!-- ============================ 诊断 ============================ -->
                     <StackPanel x:Name="PageDiag" Visibility="Collapsed">
-                        <TextBlock Text="诊断" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
-                        <TextBlock Text="出问题时先看这里" Opacity="0.7" Margin="0,0,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="诊断" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,4"/>
+                        <TextBlock TextWrapping="Wrap" Text="出问题时先看这里" Opacity="0.7" Margin="0,0,0,14"/>
 
                         <Grid Margin="2,0,0,8">
-                            <TextBlock Text="环境检查" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <TextBlock TextWrapping="Wrap" Text="环境检查" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <ui:Button x:Name="BtnDiagRecheck" HorizontalAlignment="Right"
-                                       Padding="10,3" FontSize="12"
-                                       Icon="{ui:SymbolIcon ArrowSync24}"
-                                       Content="重新检查" Click="OnDiagRecheck"/>
+                                Padding="10,3" FontSize="12"
+                                Icon="{ui:SymbolIcon ArrowSync24}"
+                                Content="重新检查" Click="OnDiagRecheck"/>
                         </Grid>
                         <ui:Card Margin="0,0,0,10">
                             <StackPanel x:Name="DiagCheckList"/>
                         </ui:Card>
                         <ui:InfoBar x:Name="DiagBar" Margin="0,0,0,18" IsOpen="True"
-                                    Severity="Informational" IsClosable="False" Title="" Message=""/>
+                            Severity="Informational" IsClosable="False" Title="" Message=""/>
 
-                        <TextBlock Text="日志与反馈" FontWeight="SemiBold" Margin="2,0,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="日志与反馈" FontWeight="SemiBold" Margin="2,0,0,8"/>
                         <ui:CardControl Icon="{ui:SymbolIcon DocumentText24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="运行日志" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="运行日志" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <StackPanel Orientation="Horizontal">
                                 <ui:Button Content="查看日志" Click="OnViewLogs"/>
-                                <ui:Button Margin="6,0,0,0" Padding="9,4"
-                                           Icon="{ui:SymbolIcon FolderOpen24}"
-                                           ToolTip="打开日志文件夹" Click="OnOpenLogs"/>
+                                <ui:Button AutomationProperties.Name="打开日志文件夹" Margin="6,0,0,0" Padding="9,4"
+                                    Icon="{ui:SymbolIcon FolderOpen24}"
+                                    ToolTip="打开日志文件夹" Click="OnOpenLogs"/>
                             </StackPanel>
                         </ui:CardControl>
 
                         <ui:CardControl Icon="{ui:SymbolIcon ArrowUpload24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="导出诊断包" FontWeight="SemiBold"/>
-                                    <TextBlock Text="把日志与环境信息打成一个 zip 放到桌面，报告问题时附上即可"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="导出诊断包" FontWeight="SemiBold"/>
+                                    <TextBlock Text="将日志与环境信息导出到桌面，不包含保存的凭据"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button x:Name="BtnDiagBundle" Content="导出诊断包" Click="OnExportDiagBundle"/>
                         </ui:CardControl>
 
                         <ui:InfoBar x:Name="DiagActionBar" Margin="0,0,0,8" Visibility="Collapsed"
-                                    IsOpen="True" IsClosable="False" Severity="Informational"
-                                    Title="" Message=""/>
+                            IsOpen="True" IsClosable="False" Severity="Informational"
+                            Title="" Message=""/>
 
-                        <TextBlock Text="系统配置" FontWeight="SemiBold" Margin="2,10,0,8"/>
+                        <TextBlock TextWrapping="Wrap" Text="系统配置" FontWeight="SemiBold" Margin="2,10,0,8"/>
 
                         <!-- 正常路径上用户碰不到这张卡：「启动桌面」会自己配。
-                             留着是给修复用的——Windows 更新或组策略可能把设置改回去 -->
+                        留着是给修复用的——Windows 更新或组策略可能把设置改回去 -->
                         <ui:CardControl Icon="{ui:SymbolIcon ShieldCheckmark24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="重新配置系统" FontWeight="SemiBold"/>
-                                    <TextBlock Text="「启动桌面」会自动配置。仅在系统更新或组策略改回设置时才需要手动修复。"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="重新配置系统" FontWeight="SemiBold"/>
+                                    <TextBlock Text="仅在系统设置被更改后需要手动修复"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button x:Name="BtnReconfigure" Content="重新配置" Click="OnReconfigure"/>
@@ -979,9 +1029,9 @@
                         <ui:CardControl Icon="{ui:SymbolIcon Delete24}" Margin="0,0,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="撤销系统配置" FontWeight="SemiBold"/>
-                                    <TextBlock Text="不再使用或准备卸载时，撤销 ParaDesk 对系统所做的配置"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                    <TextBlock TextWrapping="Wrap" Text="撤销系统配置" FontWeight="SemiBold"/>
+                                    <TextBlock Text="撤销 ParaDesk 修改的系统设置"
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button x:Name="BtnUndoSetup" Content="撤销配置…" Click="OnUndoSetup"/>
@@ -990,8 +1040,8 @@
                         <ui:CardControl Icon="{ui:SymbolIcon BookQuestionMark24}">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="使用引导" FontWeight="SemiBold"/>
-                                    <TextBlock Text="重新走一遍首次运行的引导" Opacity="0.7" FontSize="12"/>
+                                    <TextBlock TextWrapping="Wrap" Text="使用引导" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="查看首次使用引导" Opacity="0.7" FontSize="12"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <ui:Button Content="重新查看引导" Click="OnShowWizard"/>
@@ -1000,38 +1050,46 @@
 
                     <!-- ============================ 关于 ============================ -->
                     <StackPanel x:Name="PageAbout" Visibility="Collapsed">
-                        <TextBlock Text="关于" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,14"/>
+                        <TextBlock TextWrapping="Wrap" Text="关于" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,14"/>
                         <ui:Card>
                             <StackPanel>
-                                <TextBlock x:Name="AboutTitle" FontSize="17" FontWeight="SemiBold"
-                                           Text="ParaDesk 分身桌面"/>
-                                <TextBlock x:Name="AboutVersion" Opacity="0.75" Margin="0,4,0,12"/>
+                                <TextBlock TextWrapping="Wrap" x:Name="AboutTitle" FontSize="17" FontWeight="SemiBold"
+                                    Text="ParaDesk 分身桌面"/>
+                                <TextBlock TextWrapping="Wrap" x:Name="AboutVersion" Opacity="0.75" Margin="0,4,0,12"/>
                                 <TextBlock TextWrapping="Wrap" Opacity="0.85"
-                                           Text="在闲置的显示器上开出第二个桌面，拥有独立的鼠标键盘，与主桌面互不干扰；同时共用同一账户与全部文件，软件、登录状态和工作进度完全通用。"/>
+                                    Text="第二个 Windows 桌面，键鼠独立，共用当前账户和文件，不提供安全隔离。"/>
+                                <TextBlock TextWrapping="Wrap" Text="程序位置" Margin="0,14,0,4" FontWeight="SemiBold"/>
+                                <TextBox AutomationProperties.Name="程序位置" x:Name="AboutExePath" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"/>
+                                <TextBlock TextWrapping="Wrap" Text="数据目录" Margin="0,10,0,4" FontWeight="SemiBold"/>
+                                <TextBox AutomationProperties.Name="数据目录" x:Name="AboutDataPath" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"/>
+                                <WrapPanel Margin="0,10,0,0">
+                                    <ui:Button Content="复制诊断摘要" Click="OnCopyDiagnostics"/>
+                                    <ui:Button Margin="8,0,0,0" Content="打开数据目录" Click="OnOpenDataDirectory"/>
+                                </WrapPanel>
                                 <TextBlock x:Name="AboutEnv" Margin="0,14,0,0" Opacity="0.7" FontSize="12"
-                                           TextWrapping="Wrap"/>
+                                    TextWrapping="Wrap"/>
                             </StackPanel>
                         </ui:Card>
 
                         <ui:CardControl Icon="{ui:SymbolIcon ArrowSync24}" Margin="0,12,0,8">
                             <ui:CardControl.Header>
                                 <StackPanel>
-                                    <TextBlock Text="检查更新" FontWeight="SemiBold"/>
+                                    <TextBlock TextWrapping="Wrap" Text="检查更新" FontWeight="SemiBold"/>
                                     <TextBlock Text="访问 GitHub 查询是否有新版本"
-                                               Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
+                                        Opacity="0.7" FontSize="12" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </ui:CardControl.Header>
                             <StackPanel Orientation="Horizontal">
                                 <ui:Button x:Name="BtnOpenDownload" Margin="0,0,8,0" Visibility="Collapsed"
-                                           Appearance="Primary" Icon="{ui:SymbolIcon ArrowDownload24}"
-                                           Content="打开下载页" Click="OnOpenDownload"/>
+                                    Appearance="Primary" Icon="{ui:SymbolIcon ArrowDownload24}"
+                                    Content="打开下载页" Click="OnOpenDownload"/>
                                 <ui:Button x:Name="BtnCheckUpdate" Content="检查更新" Click="OnCheckUpdate"/>
                             </StackPanel>
                         </ui:CardControl>
 
                         <ui:InfoBar x:Name="UpdateBar" Visibility="Collapsed"
-                                    IsOpen="True" IsClosable="False" Severity="Informational"
-                                    Title="" Message=""/>
+                            IsOpen="True" IsClosable="False" Severity="Informational"
+                            Title="" Message=""/>
                     </StackPanel>
 
                 </StackPanel>

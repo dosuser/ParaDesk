@@ -88,7 +88,7 @@ namespace ParaDesk.Recording
         /// 墙钟。输出时间轴直接等于真实流逝时间，避免录出来忽快忽慢。
         /// 暂停时停表——这样暂停的那段时间不会计入视频，恢复后画面直接接上。
         /// </summary>
-        private System.Diagnostics.Stopwatch _clock;
+        private RecordingClock _clock;
         private TimeSpan _nextSampleTime;
         private TimeSpan _frameInterval;
         private volatile bool _paused;
@@ -130,6 +130,11 @@ namespace ParaDesk.Recording
         public RecorderState State { get { return _state; } }
         public string OutputPath { get { return _outputPath; } }
         public DateTime StartedAt { get { return _startedAt; } }
+        private TimeSpan _finalElapsed;
+        public TimeSpan Elapsed
+        {
+            get { lock (_sync) return _clock == null ? _finalElapsed : _clock.Elapsed; }
+        }
 
         /// <summary>音频若不可用，这里说明原因（录制仍会继续，只是无声）。</summary>
         public string AudioWarning { get; private set; }
@@ -240,7 +245,7 @@ namespace ParaDesk.Recording
                 int fps = _options.FrameRate;
                 _frameInterval = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / fps);
                 _nextSampleTime = TimeSpan.Zero;
-                _clock = System.Diagnostics.Stopwatch.StartNew();
+                _clock = RecordingClock.StartNew();
 
                 // 音频要在编码管线建立之前就开始采，否则视频开头会缺声音
                 if (_options.Audio != AudioSource.None)
@@ -952,6 +957,7 @@ namespace ParaDesk.Recording
 
                 var clock = _clock;
                 if (clock != null) dur = clock.Elapsed;
+                lock (_sync) _finalElapsed = dur;
                 warning = BuildWarning();
 
                 CleanUp();

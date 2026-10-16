@@ -242,6 +242,20 @@ namespace ParaDesk.Core
             return false;
         }
 
+        public bool RenameProfile(string oldName, string newName)
+        {
+            var profile = FindProfile(oldName);
+            newName = (newName ?? "").Trim();
+            if (profile == null || newName.Length == 0 || newName.Length > 60) return false;
+            foreach (var other in Profiles)
+                if (other != null && !ReferenceEquals(other, profile) &&
+                    string.Equals(other.Name, newName, StringComparison.OrdinalIgnoreCase)) return false;
+            profile.Name = newName;
+            if (ActiveProfile == oldName) ActiveProfile = newName;
+            if (PreferredProfile == oldName) PreferredProfile = newName;
+            return true;
+        }
+
         public DesktopProfile PickForCurrentLayout(IEnumerable<string> availableDevices)
         {
             var active = GetActiveProfile();
@@ -379,15 +393,22 @@ namespace ParaDesk.Core
             }
         }
 
-        public static void Save(AppSettings s)
+        private static string _lastSaveError;
+        public static string LastSaveError { get { lock (Sync) return _lastSaveError; } }
+
+        public static bool Save(AppSettings s)
         {
-            if (s == null) return;
+            return SaveTo(s, AppInfo.SettingsPath);
+        }
+
+        internal static bool SaveTo(AppSettings s, string path)
+        {
+            if (s == null) return false;
             lock (Sync)
             {
                 try
                 {
                     s.SchemaVersion = AppSettings.CurrentSchema;
-                    string path = AppInfo.SettingsPath;
                     string tmp = path + ".tmp";
 
                     using (var fs = File.Create(tmp))
@@ -398,10 +419,14 @@ namespace ParaDesk.Core
                     // 原子替换，避免写一半断电留下损坏文件
                     if (File.Exists(path)) File.Replace(tmp, path, null);
                     else File.Move(tmp, path);
+                    _lastSaveError = null;
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     Log.Error("保存设置失败", ex);
+                    _lastSaveError = ex.Message;
+                    return false;
                 }
             }
         }

@@ -10,8 +10,6 @@ namespace ParaDesk.Core
             Add("截图(&P)", "Ca&pture screenshot");
             Add("暂停录制(&U)", "Pa&use recording");
             Add("继续录制(&U)", "Res&ume recording");
-
-            Add("录制已暂停", "Recording paused");
             Add("有新提醒", "New notification");
 
             Add("Ctrl+C 留给复制，请换一个", "Ctrl+C is reserved for Copy; try another");

@@ -35,6 +35,7 @@ namespace ParaDesk.Diagnostics
             Group("RDP 保存账户身份保留", TestRdpCredentialName);
             Group("AppSettings 方案挑选（偏好方案回切）", TestProfilePick);
             Group("EnvironmentReport 判据一致", TestEnvironmentReport);
+            Group("1.2.0 状态与保存回归", TestOptimization120);
             Group("热键规范化", TestHotkeyNormalize);
             Group("RunKeyStore 启动项解析", TestRunKey);
             Group("启动命令拼接与工作目录", TestStartupCommand);
@@ -599,6 +600,82 @@ namespace ParaDesk.Diagnostics
             Check("128 种组合下 ReadyToStart ⇔ NextAction == null", mismatch == 0, firstBad);
             Check("Blocked 时绝不 ReadyToStart", blockedReady == 0, null);
             Eq("恰好一种组合就绪", 1, ready);
+        }
+
+        private static void TestOptimization120()
+        {
+            var env = new EnvironmentReport
+            {
+                RdpControlRegistered = true, ChildSessionsEnabled = true,
+                RdpListenerEnabled = true, TermServiceRunning = true,
+                TransportStatus = unchecked((int)0x800700B7), ChildSessionId = 3,
+            };
+            Check("已有子会话时通道可用", env.TransportReady && env.ReadyToStart, null);
+            Check("已有子会话不要求重配或重启", !env.NeedsSetup && env.NextAction == null, null);
+            env.ChildSessionId = ParaDesk.Native.NativeMethods.NoChildSession;
+            Check("无子会话且通道冲突时不会误报就绪", !env.TransportReady && !env.ReadyToStart, null);
+            Check("通道错误不触发配置", !env.NeedsSetup, null);
+            Check("未知错误不建议重启", !env.NextAction.Contains("重启"), null);
+            env.TransportStatus = unchecked((int)0x80070005);
+            Check("拒绝访问不建议重启", !env.NextAction.Contains("重启"), null);
+            env.TermServiceRunning = false;
+            Check("服务未运行才要求配置", env.NeedsSetup, null);
+
+            Check("同账户允许保留密码", CredentialStore.CanKeepPassword(true, "PC\\user", "PC\\user"), null);
+            Check("更改账户必须输入密码", !CredentialStore.CanKeepPassword(true, "PC\\user", "MicrosoftAccount\\user@example.test"), null);
+            Check("无保存值不允许保留密码", !CredentialStore.CanKeepPassword(false, "PC\\user", "PC\\user"), null);
+            Check("空账户不允许保留密码", !CredentialStore.CanKeepPassword(true, null, null), null);
+
+            long now = 0;
+            var clock = new RecordingClock(delegate { return now; }, 1000);
+            clock.Start(); now += 30000;
+            Eq("录制计时", TimeSpan.FromSeconds(30), clock.Elapsed);
+            clock.Stop(); now += 1800000;
+            Eq("暂停不计时，也不触发分段", TimeSpan.FromSeconds(30), clock.Elapsed);
+            clock.Start(); clock.Start(); now += 30000;
+            Eq("恢复录制累计有效时长", TimeSpan.FromMinutes(1), clock.Elapsed);
+            clock.Stop(); clock.Stop(); now += 10000;
+            Eq("保存时计时保持停止", TimeSpan.FromMinutes(1), clock.Elapsed);
+            clock.Reset(); Eq("首帧重置计时", TimeSpan.Zero, clock.Elapsed);
+
+            var settings = AppSettings.CreateDefault();
+            string original = settings.GetActiveProfile().Name;
+            settings.PreferredProfile = original;
+            Check("重命名方案", settings.RenameProfile(original, "Work"), null);
+            Eq("当前方案名称同步", "Work", settings.ActiveProfile);
+            Eq("偏好方案名称同步", "Work", settings.PreferredProfile);
+            settings.AddProfile(new DesktopProfile { Name = "Other" });
+            Check("拒绝重名（忽略大小写）", !settings.RenameProfile("Work", "other"), null);
+            Check("拒绝空名称", !settings.RenameProfile("Work", " "), null);
+            Check("拒绝过长名称", !settings.RenameProfile("Work", new string('x', 61)), null);
+            Check("允许仅更改大小写", settings.RenameProfile("Work", "work"), null);
+            Eq("大小写变更同步偏好", "work", settings.PreferredProfile);
+            Check("无效旧名称不修改", !settings.RenameProfile("Missing", "New"), null);
+
+            string folder = Path.Combine(Path.GetTempPath(), "ParaDesk-SettingsTest-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(folder);
+            string path = Path.Combine(folder, "settings.json");
+            try
+            {
+                Check("设置保存报告成功", SettingsStore.SaveTo(settings, path), null);
+                string before = File.ReadAllText(path);
+                Directory.CreateDirectory(path + ".tmp");
+                Check("设置保存报告失败", !SettingsStore.SaveTo(settings, path), null);
+                Check("设置保存失败可见", SettingsStore.LastSaveError != null, null);
+                Eq("保存失败不破坏原文件", before, File.ReadAllText(path));
+                Directory.Delete(path + ".tmp");
+                settings.RenameProfile("work", "Retry");
+                Check("重试原子替换成功", SettingsStore.SaveTo(settings, path), null);
+                Check("重试成功清除错误", SettingsStore.LastSaveError == null, null);
+                Check("重试内容已持久化", File.ReadAllText(path).Contains("Retry"), null);
+            }
+            finally
+            {
+                if (File.Exists(path)) File.Delete(path);
+                if (File.Exists(path + ".tmp")) File.Delete(path + ".tmp");
+                if (Directory.Exists(path + ".tmp")) Directory.Delete(path + ".tmp");
+                Directory.Delete(folder);
+            }
         }
 
         private static void TestHotkeyNormalize()

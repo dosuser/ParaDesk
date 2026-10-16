@@ -53,8 +53,8 @@ namespace ParaDesk.Core
             Add("查看当前状态。--json 输出机器可读的状态快照；没有在运行时退出码为 3。",
                 "Show the current state. --json prints a machine-readable snapshot; exit code 3 if ParaDesk is not running.");
             Add("--start [--profile <方案名>] [--wait]", "--start [--profile <name>] [--wait]");
-            Add("启动或重新接入分身桌面。--profile 先切换方案；--wait 等到连上或失败（最多 100 秒）。环境未就绪返回 2，不会弹出管理员授权。",
-                "Start or reattach the parallel desktop. --profile switches the profile first; --wait waits until connected or failed (up to 100 s). Returns 2 if the system is not ready; never asks for administrator rights.");
+            Add("启动或重新接入。--profile 先切换方案；--wait 等到 Windows 登录完成或失败（最多 100 秒）。环境未就绪返回 2，不请求提权。",
+                "Start or reattach. --profile switches profile first; --wait waits for Windows sign-in or failure (up to 100 s). Returns 2 if not ready; never requests elevation.");
             Add("收起画面，子会话继续运行。", "Hide the parallel desktop window; the child session keeps running.");
             Add("注销子会话（结束里面的所有程序），不弹确认框。",
                 "Sign out of the child session (ends every program in it), without confirmation.");

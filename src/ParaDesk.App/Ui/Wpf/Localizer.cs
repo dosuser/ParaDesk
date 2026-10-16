@@ -94,6 +94,9 @@ namespace ParaDesk.Shell
 
         private static void Apply(DependencyObject node)
         {
+            string name = System.Windows.Automation.AutomationProperties.GetName(node);
+            if (!string.IsNullOrEmpty(name))
+                System.Windows.Automation.AutomationProperties.SetName(node, L.T(name));
             var tb = node as TextBlock;
             if (tb != null)
             {

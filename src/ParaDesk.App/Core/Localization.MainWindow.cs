@@ -15,8 +15,6 @@ namespace ParaDesk.Core
 
             Add("分身桌面里", "Inside the parallel desktop");
             Add("登录后自动运行", "Run after sign-in");
-            Add("分身桌面每次登录时执行一次，已登录的桌面需关闭后重新启动才生效",
-                "Runs once each time the parallel desktop signs in. If it's already signed in, close it and start it again for changes to apply");
             Add("例如 wt -d C:\\repo 或 powershell -NoExit -Command claude",
                 "e.g. wt -d C:\\repo or powershell -NoExit -Command claude");
             Add("工作目录（留空为用户主目录）", "Working folder (blank = your user folder)");
@@ -27,8 +25,6 @@ namespace ParaDesk.Core
             Add("登录后自动运行和保持唤醒都靠它执行，没注册时不会生效。详见日志。",
                 "Run after sign-in and Keep awake both rely on it and won't work without it. See the log.");
             Add("保持唤醒", "Keep awake");
-            Add("阻止电脑睡眠和分身桌面因空闲而锁屏，适合让 agent 长时间无人值守地运行。对下次启动的分身桌面生效；已在运行的一般 30 秒内也会跟上。",
-                "Keeps the PC from sleeping and the parallel desktop from locking when idle, so an agent can run unattended for hours. Applies the next time the parallel desktop starts; one that's already running usually follows within 30 seconds.");
             Add("分身桌面的声音", "Parallel desktop sound");
             Add("下次启动或重新接入时生效", "Takes effect the next time you start or reattach");
             Add("在本机播放", "Play on this PC");
@@ -37,15 +33,9 @@ namespace ParaDesk.Core
 
             Add("截取分身桌面窗口；没开分身桌面时截取方案所在的显示器",
                 "Captures the parallel desktop window; if it isn't open, captures the profile's monitor");
-            Add("越高越清晰，文件也越大；1–5 FPS 适合长时间延时留档",
-                "Higher is sharper but makes bigger files; 1–5 FPS suits long time-lapse records");
             Add("{0} FPS（延时）", "{0} FPS (time-lapse)");
             Add("随分身桌面自动录制", "Record along with the parallel desktop");
-            Add("分身桌面连上后自动开始录它，收起或关闭时自动结束",
-                "Starts recording the parallel desktop when it connects and stops when it's hidden or closed");
             Add("自动分段", "Split into segments");
-            Add("长时间录制按时长切成多个文件；程序意外退出时只会损失最后一段",
-                "Splits long recordings into several files by length; if the app quits unexpectedly, only the last segment is lost");
             Add("不分段", "Don't split");
             Add("每 {0} 分钟", "Every {0} minutes");
             Add("正在截图…", "Taking screenshot…");
@@ -54,14 +44,9 @@ namespace ParaDesk.Core
             Add("无法打开文件夹：", "Couldn't open the folder: ");
             Add("文件已不存在：", "The file no longer exists: ");
             Add("无法打开该文件：", "Couldn't open the file: ");
-
-            Add("截取分身桌面窗口（没开时截方案所在的显示器），存到录制的保存位置",
-                "Captures the parallel desktop window (or the profile's monitor if it isn't open) and saves it to the recording folder");
             Add("暂停 / 继续录制", "Pause / resume recording");
             Add("录制中才有效", "Only works while recording");
             Add("收起分身桌面", "Hide the parallel desktop");
-            Add("只收起画面、不会再打开；里面的程序继续运行",
-                "Only hides the view and never reopens it; programs inside keep running");
             Add("把剪贴板发送到分身桌面", "Send clipboard to the parallel desktop");
             Add("从分身桌面取回剪贴板", "Fetch clipboard from the parallel desktop");
             Add("剪贴板设为「手动同步」时使用", "For when the clipboard is set to Manual sync");
@@ -73,35 +58,17 @@ namespace ParaDesk.Core
             Add("有热键占用了保留的组合键", "Some hotkeys use reserved combinations");
             Add("以下热键占用了系统或常用程序在用的组合键：{0}",
                 "These hotkeys use combinations that Windows or common programs rely on: {0}");
-
-            Add("程序行为与全局选项，不随方案变化", "App behavior and global options — not tied to any profile");
-            Add("Language — 切换后程序会自动重启，分身桌面保持运行",
-                "语言 — the app restarts automatically after switching; the parallel desktop keeps running");
             Add("启动", "Startup");
             Add("登录 Windows 后自动运行 ParaDesk", "Run ParaDesk when you sign in to Windows");
             Add("启动时最小化到托盘", "Start minimized to the tray");
-            Add("开机自启时不弹出主窗口，只在托盘运行",
-                "When started at sign-in, stay in the tray without opening the main window");
             Add("程序启动后自动开启分身桌面", "Open the parallel desktop when the app starts");
-            Add("环境就绪时自动启动；分身桌面已在后台运行时自动重新接入。配合开机自启，开机后即可交给 agent 使用",
-                "Starts it once the system is ready, or reattaches if it's already running in the background. With Run at startup, it's ready for your agent right after you sign in");
             Add("启动时检查更新", "Check for updates at startup");
-            Add("每次启动时访问 GitHub 查询新版本；除此之外本程序不联网",
-                "Contacts GitHub at each startup to look for a new version; the app doesn't go online otherwise");
             Add("画面意外断开时自动重新接入", "Reattach automatically if the view drops");
-            Add("分身桌面还在运行、只是画面断了（例如远程桌面服务重启）时，自动把画面接回来",
-                "If the parallel desktop is still running but its view dropped (for example, Remote Desktop Services restarted), bring the view back automatically");
             Add("关闭桌面前确认", "Confirm before closing the desktop");
-            Add("「关闭桌面」会注销分身桌面、结束里面的所有程序，先确认一次",
-                "Close desktop signs out the parallel desktop and ends every program in it, so ask first");
             Add("关机时自动注销分身桌面", "Sign out the parallel desktop at shutdown");
-            Add("关机或重启前先注销，让里面的程序有机会正常退出、保存",
-                "Sign it out before shutdown or restart so programs inside get a chance to exit and save");
 
             Add("AI 工具", "AI tools");
             Add("AI 工具集成", "AI tool integration");
-            Add("分身桌面里的 agent 可以用命令行通知你（--notify）、查询状态（--status）。按钮会把现成的配置或命令复制到剪贴板。",
-                "Agents in the parallel desktop can notify you (--notify) and check status (--status) from the command line. These buttons copy ready-made config or commands to the clipboard.");
             Add("复制 Claude Code 通知配置", "Copy Claude Code notification config");
             Add("复制命令行用法", "Copy command-line usage");
             Add("已复制 Claude Code 通知配置", "Claude Code notification config copied");
@@ -128,8 +95,6 @@ namespace ParaDesk.Core
             Add("环境检查失败", "Environment check failed");
             Add("详见日志。", "See the log.");
             Add("导出诊断包", "Export diagnostic bundle");
-            Add("把日志与环境信息打成一个 zip 放到桌面，报告问题时附上即可",
-                "Packs the logs and environment info into a zip on your desktop — attach it when reporting a problem");
             Add("正在生成…", "Creating…");
             Add("正在生成诊断包…", "Creating the diagnostic bundle…");
             Add("正在收集日志与环境信息。", "Collecting logs and environment info.");
@@ -137,8 +102,6 @@ namespace ParaDesk.Core
             Add("已生成诊断包", "Diagnostic bundle created");
             Add("系统配置", "System setup");
             Add("撤销系统配置", "Undo system setup");
-            Add("不再使用或准备卸载时，撤销 ParaDesk 对系统所做的配置",
-                "When you stop using ParaDesk or before uninstalling, undo the changes it made to the system");
             Add("撤销配置…", "Undo setup…");
             Add("将撤销 ParaDesk 对系统所做的配置：", "This undoes the changes ParaDesk made to the system:");
             Add("关闭 Windows 的子会话功能", "Turn off Windows child sessions");
@@ -175,6 +138,107 @@ namespace ParaDesk.Core
             Add("已是最新版本", "You're up to date");
             Add("当前版本 {0}，GitHub 上最新发布为 {1}。", "You have {0}; the latest release on GitHub is {1}.");
             Add("无法打开浏览器，请手动访问：", "Couldn't open the browser. Please visit:");
+            Add("不接收你的键鼠操作；程序注入不受影响", "Blocks your input; automated input still works");
+            Add("显示位置与画面质量", "Display location and quality");
+            Add("分辨率和缩放选项取自此屏幕。", "Resolution and scale options come from this monitor.");
+            Add("收起后可修改，重新接入生效", "Detach to edit; applies when you reattach.");
+            Add("连接时即时生效；窗口模式下可跟随窗口大小", "Applies live; windowed desktops can follow the window size.");
+            Add("对整台电脑生效，不随方案保存。", "Applies to this PC, across all profiles.");
+            Add("键鼠输入与桌面共享", "Input and sharing between desktops");
+            Add("默认与主桌面共享；收起后可修改", "Shared by default; detach to change the mode.");
+            Add("为分身桌面创建独立的浏览器配置", "Create a separate browser profile for the parallel desktop.");
+            Add("每次登录执行一次；已登录的桌面需关闭后再启动", "Runs once at sign-in; close and restart a signed-in desktop to apply changes.");
+            Add("阻止睡眠和分身桌面空闲锁屏；运行中约 30 秒内生效", "Prevents sleep and idle locking in the parallel desktop; applies within about 30 seconds.");
+            Add("录制窗口或显示器", "Record a window or monitor");
+            Add("画质越高，文件越大；1–5 FPS 适合延时录制", "Higher quality uses more space; 1–5 FPS suits time-lapse recording.");
+            Add("登录完成后开始录制，收起或关闭时停止", "Starts after sign-in; stops when detached or closed.");
+            Add("按有效录制时长分段；意外退出可能损失最后一段", "Splits by recorded time, excluding pauses; an unexpected exit may lose the last segment.");
+            Add("在任何程序中均可使用", "Works from any app");
+            Add("截取分身窗口；未打开时截取目标屏幕，保存到录制目录", "Captures the desktop window, or the target monitor if detached; saves to the recording folder.");
+            Add("收起画面，里面的程序继续运行", "Hides the viewer; apps inside keep running.");
+            Add("需搭配 Ctrl / Alt / Shift / Win；Backspace 清除。注册失败时请更换组合。", "Use Ctrl / Alt / Shift / Win; Backspace clears. Choose another combination if registration fails.");
+            Add("全局选项，不随方案变化", "Global options, shared by all profiles");
+            Add("Language — 切换后重启程序，分身桌面继续运行", "Language — restarts the app; the parallel desktop keeps running.");
+            Add("开机自启时仅显示托盘图标", "Shows only the tray icon when starting with Windows.");
+            Add("环境就绪时自动启动，已有桌面则重新接入", "Starts when ready, or reattaches to an existing desktop.");
+            Add("启动时访问 GitHub 查询新版本", "Checks GitHub for a new version at startup.");
+            Add("桌面仍在运行时，自动恢复意外断开的画面", "Restores an interrupted connection while the desktop is still running.");
+            Add("关闭会注销分身桌面并结束其中所有程序", "Closing signs out the parallel desktop and ends all apps inside.");
+            Add("关机或重启前注销分身桌面，供程序正常退出", "Signs out the parallel desktop before shutdown or restart so apps can exit.");
+            Add("通常无需保存；登录失败时可手动设置", "Usually unnecessary; configure manually if sign-in fails.");
+            Add("支持命令行通知（--notify）和状态查询（--status）", "Supports notifications (--notify) and status queries (--status).");
+            Add("将日志与环境信息导出到桌面，不包含保存的凭据", "Exports logs and environment details to the desktop; excludes saved credentials.");
+            Add("仅在系统设置被更改后需要手动修复", "Use if system settings have been changed.");
+            Add("撤销 ParaDesk 修改的系统设置", "Reverts system settings changed by ParaDesk.");
+            Add("查看首次使用引导", "Review the setup guide");
+            Add("第二个 Windows 桌面，键鼠独立，共用当前账户和文件，不提供安全隔离。", "A second Windows desktop with independent input. It shares your account and files and provides no security isolation.");
+            Add("账户不变时，密码留空可沿用；更改账户需重新输入。", "Leave the password blank to keep it only if the account is unchanged.");
+            Add("使用 Windows 加密保存", "Encrypted by Windows");
+            Add("仅本机当前账户可解密；同账户程序仍可访问。", "Only this Windows account on this PC can decrypt it; apps running as you can still access it.");
+            Add("留空恢复默认名称；按显示器接口保存。", "Leave blank to restore the default; names are saved per monitor connection.");
+            Add("首次登录可能需要一两分钟。", "First sign-in may take a minute or two.");
+            Add("正在恢复连接，桌面里的程序继续运行。", "Restoring the connection; apps inside keep running.");
+            Add("桌面已就绪，主桌面键鼠不受影响。", "Ready to use; input on your main desktop is unaffected.");
+            Add("程序仍在运行，点「重新接入」恢复画面。", "Apps are still running. Reattach to show the desktop.");
+            Add("点「启动桌面」即可开始。", "Click Start desktop to begin.");
+            Add("已创建方案「{0}」。", "Created profile “{0}”.");
+            Add("系统声音包含本机全部播放；麦克风需允许桌面应用访问。", "System audio includes all playback on this PC; microphone access requires desktop-app permission.");
+            Add("账户已更改，请重新输入密码。", "Account changed. Enter the password again.");
+            Add("设置未保存", "Settings not saved");
+            Add("当前更改仅本次有效，请重试保存。", "Changes apply to this session only. Retry saving.");
+            Add("重试保存", "Retry saving");
+            Add("程序位置", "Program location");
+            Add("数据目录", "Data folder");
+            Add("复制诊断摘要", "Copy diagnostic summary");
+            Add("打开数据目录", "Open data folder");
+            Add("正在登录…", "Signing in…");
+            Add("登录中", "Signing in");
+            Add("已连接，等待 Windows 完成登录。若出现凭据窗口，请使用账户密码。", "Connected. Waiting for Windows sign-in; use your account password if prompted.");
+            Add("已建立（桌面运行中）", "Established (desktop running)");
+            Add("正在准备录制…", "Preparing to record…");
+            Add("正在保存录制…", "Saving recording…");
+            Add("录制已暂停", "Recording paused");
+            Add("跟随窗口大小", "Match window size");
+            Add("复制方案", "Duplicate profile");
+            Add("重命名方案", "Rename profile");
+            Add("方案名称", "Profile name");
+            Add("最多 60 个字符，名称不能重复。", "Up to 60 characters; names must be unique.");
+            Add("请输入未使用的方案名称。", "Enter a unique profile name.");
+            Add("子会话服务暂不可用。若刚完成配置，请保存工作后重启电脑。", "Child session service unavailable. If setup just completed, save your work and restart Windows.");
+            Add("子会话通道不可用：", "Child session transport unavailable: ");
+            Add("。请查看诊断日志。", ". See the diagnostic log.");
+            Add("RPC 服务不可用", "RPC service unavailable");
+            Add("通道已存在", "Transport already exists");
+            Add("等待 100 秒仍未完成登录，请检查连接窗口或诊断日志。", "Sign-in did not complete within 100 seconds. Check the connection window or diagnostic log.");
+            Add("使用账户密码（非 PIN）。Microsoft 账户填写 MicrosoftAccount\\邮箱。保存后仍需由 Windows 验证登录。", "Use your account password, not a PIN. For Microsoft accounts, use MicrosoftAccount\\email. Windows verifies it when you sign in.");
+            Add("在选定的显示器上打开第二个 Windows 桌面，键鼠操作与主桌面互不干扰。", "Opens a second Windows desktop on your chosen monitor, with input independent of your main desktop.");
+            Add("共用账户和文件", "Shared account and files");
+            Add("分身桌面使用当前 Windows 账户，共用软件和文件，不提供安全隔离。同账户程序的配置可能互相影响。", "Uses your Windows account, apps and files, with no security isolation. Apps sharing this account may affect each other’s settings.");
+            Add("家庭版不支持。首次配置需管理员授权，日常使用无需提权。", "Home edition is not supported. Initial setup requires administrator approval; daily use does not.");
+            Add("检查运行条件。「启动桌面」会自动配置可修复项，需要管理员授权。", "Checks requirements. Start desktop configures supported fixes with administrator approval.");
+            Add("选择目标屏幕；点“识别屏幕”可显示编号。", "Choose a monitor; Identify monitors shows its number.");
+            Add("启动前请了解以下操作和限制。", "Review these controls and limits before starting.");
+            Add("使用限制", "Limitations");
+            Add("启动选项", "Startup options");
+            Add("仅显示托盘图标，热键保持可用", "Shows only the tray icon; hotkeys remain available.");
+            Add("忽略你的键鼠输入，可用热键或托盘菜单切换", "Ignores your input; toggle with a hotkey or the tray menu.");
+            Add("已保存凭据，使用 Windows 加密", "Credentials saved with Windows encryption");
+            Add("同时仅支持一个分身桌面；Windows 沙盒提供临时隔离环境。", "Only one parallel desktop is supported; Windows Sandbox provides temporary isolation.");
+            Add("需先启用沙盒功能：需要管理员授权并重启电脑。", "Enabling Sandbox requires administrator approval and a Windows restart.");
+            Add("即时生效；固定分辨率选项取自 {0}", "Applies live; fixed resolutions come from {0}");
+            Add("录制帧率", "Recording frame rate");
+            Add("录制码率", "Recording bitrate");
+            Add("工作目录", "Working folder");
+            Add("名称", "Name");
+            Add("筛选日志", "Filter log");
+            Add("当前方案：{0}。以下设置随方案保存。", "Profile: {0}. Settings below are saved with it.");
+            Add("当前仅一块屏幕；用热键或「收起桌面」切回主桌面。", "One monitor is connected. Use the hotkey or Hide desktop to return to your main desktop.");
+            Add("点「启动桌面」自动配置，需要管理员授权。", "Start desktop applies setup with administrator approval.");
+            Add("例如 wt -d C:\\repo", "e.g. wt -d C:\\repo");
+            Add("系统配置内容", "System changes");
+            Add("• 启用子会话、远程桌面监听器和服务自动启动\n• 必要时启用专用/域网络的远程桌面防火墙规则\n• 启用默认凭据委派，关闭「始终提示输入密码」\n• 关闭跨设备恢复，并抑制其在分身桌面中的错误提示", "• Enable child sessions, the Remote Desktop listener and automatic service startup\n• Enable Remote Desktop firewall rules on private/domain networks if required\n• Allow default credential delegation and disable “Always prompt for password”\n• Disable Cross Device Resume and suppress its errors in the parallel desktop");
+            Add("• 同时仅支持一个分身桌面\n• 剪贴板默认共享；浏览器需独立配置，可在“输入与共享”创建快捷方式\n• 重启前请保存分身桌面中的工作", "• Only one parallel desktop at a time\n• Clipboard sharing is on by default; create a separate browser profile in Input & sharing\n• Save work in the parallel desktop before restarting Windows");
+            Add("日志级别", "Log level");
         }
     }
 }

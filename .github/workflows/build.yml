@@ -85,3 +85,27 @@ jobs:
           $log = Join-Path $env:LOCALAPPDATA 'ParaDesk\paradesk.log'
           if (Test-Path -LiteralPath $log) { Get-Content -LiteralPath $log -Tail 100 -Encoding utf8 }
           else { Write-Host "no log at $log" }
+
+  release:
+    needs: [build, arm64]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Package and publish new version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/github-release.ps1
+
