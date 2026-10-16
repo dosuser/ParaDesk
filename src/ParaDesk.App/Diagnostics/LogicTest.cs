@@ -31,6 +31,8 @@ namespace ParaDesk.Diagnostics
             Group("MonitorNaming 名称查找", TestMonitorNaming);
             Group("DisplayMode.AspectLabel", TestAspect);
             Group("RdpDisconnectReason.Describe", TestDisconnectReason);
+            Group("默认凭据账户建议", TestCredentialIdentity);
+            Group("RDP 保存账户身份保留", TestRdpCredentialName);
             Group("AppSettings 方案挑选（偏好方案回切）", TestProfilePick);
             Group("EnvironmentReport 判据一致", TestEnvironmentReport);
             Group("热键规范化", TestHotkeyNormalize);
@@ -196,6 +198,52 @@ namespace ParaDesk.Diagnostics
             Eq("ExitCodes.NotReady == 2", 2, ExitCodes.NotReady);
             Eq("ExitCodes.NotRunning == 3", 3, ExitCodes.NotRunning);
             Eq("ExitCodes.Usage == 64", 64, ExitCodes.Usage);
+        }
+
+        private static void TestCredentialIdentity()
+        {
+            const string principal = "user@example.invalid";
+            const string expected = "MicrosoftAccount\\" + principal;
+            Func<string, string> resolve = name => WindowsAccountIdentity.NormalizeCurrentAlias(
+                name, "localuser", "MY-PC\\localuser", "MY-PC", principal);
+            Eq("当前本地账户的完整别名映射为 Microsoft Account", expected, resolve("MY-PC\\localuser"));
+            Eq("当前本地短用户名映射为 Microsoft Account", expected, resolve("localuser"));
+            Eq("点号域的当前用户映射为 Microsoft Account", expected, resolve(".\\localuser"));
+            Eq("账户别名忽略大小写", expected, resolve("my-pc\\LOCALUSER"));
+            Eq("当前 Microsoft Account 邮箱补齐身份提供方", expected, resolve(principal));
+            Eq("显式 Microsoft Account 名称保持原样", expected, resolve(expected));
+            Eq("其他本地账户不被替换", "MY-PC\\otheruser", resolve("MY-PC\\otheruser"));
+            Eq("其他域的同名账户不被替换", "OTHER-DOMAIN\\localuser", resolve("OTHER-DOMAIN\\localuser"));
+            Eq("其他 UPN 不被替换", "other@example.invalid", resolve("other@example.invalid"));
+            Eq("未关联 Internet 身份时保留本地账户", "MY-PC\\localuser",
+                WindowsAccountIdentity.NormalizeCurrentAlias("MY-PC\\localuser", "localuser",
+                    "MY-PC\\localuser", "MY-PC", null));
+        }
+
+        private static void TestRdpCredentialName()
+        {
+            var microsoft = Rdp.RdpCredentialName.Parse("MicrosoftAccount\\user@example.invalid");
+            Eq("Microsoft Account 保留完整提供方限定名", "MicrosoftAccount\\user@example.invalid", microsoft.UserName);
+            Eq("Microsoft Account 不作为 AD 域拆开", "", microsoft.Domain);
+            Check("Microsoft Account 标识为提供方限定名", microsoft.ProviderQualified, null);
+
+            var lower = Rdp.RdpCredentialName.Parse("microsoftaccount\\User@Example.invalid");
+            Eq("提供方大小写不改变已保存身份", "microsoftaccount\\User@Example.invalid", lower.UserName);
+            var entra = Rdp.RdpCredentialName.Parse("AzureAD\\user@example.invalid");
+            Eq("Entra 提供方前缀保持完整", "AzureAD\\user@example.invalid", entra.UserName);
+            Eq("Entra 提供方不作为 AD 域拆开", "", entra.Domain);
+
+            var local = Rdp.RdpCredentialName.Parse("MY-PC\\localuser");
+            Eq("用户选定的本地账户保留本机域", "MY-PC", local.Domain);
+            Eq("用户选定的本地账户不改写为在线邮箱", "localuser", local.UserName);
+            Check("本地账户不标识为在线提供方", !local.ProviderQualified, null);
+            var dot = Rdp.RdpCredentialName.Parse(".\\localuser");
+            Eq("点号本机域保持不变", ".", dot.Domain);
+            var upn = Rdp.RdpCredentialName.Parse("user@example.invalid");
+            Eq("显式 UPN 不自动补充身份提供方", "user@example.invalid", upn.UserName);
+            Eq("显式 UPN 的域字段为空", "", upn.Domain);
+            var simple = Rdp.RdpCredentialName.Parse("localuser");
+            Eq("显式短账户名保持原样", "localuser", simple.UserName);
         }
 
         private static void TestSettings()

@@ -750,8 +750,8 @@ namespace ParaDesk.Core
                 Add("保存失败，详见日志。", "Save failed — see the log.");
                 Add("登录凭据", "Credentials");
                 Add("保存登录凭据", "Save sign-in credentials");
-                Add("通常不需要保存密码：分身桌面会用你当前的登录身份自动进入。只有账户仅用 PIN 或 Windows Hello 登录时，系统才会强制要求账户密码。",
-                    "You usually don't need to save a password — the parallel desktop signs in with your current identity. Windows only demands an account password when the account signs in with a PIN or Windows Hello only.");
+                Add("分身桌面通常使用当前登录身份。需要保存凭据时，请输入账户密码，不能使用 Windows Hello PIN。Microsoft 账户名使用 MicrosoftAccount\\邮箱。保存凭据不代表 Windows 已验证登录成功。",
+                    "The parallel desktop usually uses your current identity. If you save credentials, enter the account password, not a Windows Hello PIN. For a Microsoft account, use MicrosoftAccount\\email. Saving credentials does not confirm a successful Windows sign-in.");
                 Add("DPAPI 加密，仅本机本账户可解密", "DPAPI-encrypted; only this account on this PC can decrypt it");
                 Add("它防的是密码明文落盘与被云同步，不能对抗以你的身份运行的程序。",
                     "That prevents the password hitting disk in plain text or syncing to the cloud; it does not defend against programs running as you.");

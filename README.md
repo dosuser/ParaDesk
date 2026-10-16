@@ -290,7 +290,7 @@ Start with `ParaDesk.exe --probe` or the Diagnostics page — they run the same 
 
 Other things that come up:
 
-- **A password prompt on every connect** — run the configuration again (Start desktop): it allows delegating credentials to this machine and turns off "Always prompt for password". If your organisation enforces the prompt by policy, save the credentials under Settings → Credentials.
+- **A password prompt on every connect** — check Diagnostics first. Setup allows credential delegation to this machine and turns off "Always prompt for password"; organisation policy may override these settings. If Windows requires an account password, save it under Settings → Credentials. Use the account password, not a Windows Hello PIN; for a Microsoft account, use `MicrosoftAccount\email`. Saving credentials only confirms encrypted storage. If manually entering the same account and password also fails, investigate Windows authentication before retrying automatic login. A successful login is recorded as "分身桌面登录完成" in the log.
 - **The view closed but the agent is still working** — by design, the child session outlives the window. Press *Reattach* on the Desktop page, *Reattach desktop* in the tray menu, or run `--start`; with *Reattach automatically if the view drops* on, this happens by itself when the view drops unexpectedly.
 
 **Diagnostic bundle.** Diagnostics → **Export diagnostic bundle** (or `ParaDesk.exe --diagbundle`) writes one zip with the logs, the probe report, `settings.json` and `state.json`. Saved sign-in credentials are never included, and *Run after sign-in* commands are redacted; the logs and paths can still show your Windows user name and folder names — `manifest.txt` in the zip lists every file, so look before you post it publicly. Attach it to your issue.
@@ -583,7 +583,7 @@ cmd 里用 `start "" /wait "C:\path\to\ParaDesk.exe" --status`，再看 `%ERRORL
 
 其他常见情况：
 
-- **每次连接都要输密码** —— 重新走一遍配置（点启动桌面）：它会允许向本机委派凭据，并关闭「始终提示输入密码」。如果单位用策略强制要求输入，在 设置 → 登录凭据 里保存凭据。
+- **每次连接都要输密码** —— 先查看诊断。配置会允许向本机委派凭据，并关闭「始终提示输入密码」，单位策略可能覆盖这些设置。若 Windows 仍要求账户密码，可在 设置 → 登录凭据 中保存。请使用账户密码，不能填写 Windows Hello PIN；Microsoft 账户名使用 `MicrosoftAccount\邮箱`。保存成功只表示已加密保存。若手动输入同一账户和密码也登录失败，应先排查 Windows 身份验证；日志出现「分身桌面登录完成」才表示登录成功。
 - **画面关了，agent 还在干活** —— 这是设计如此，子会话比窗口活得长。点"桌面"页的**重新接入**（或托盘菜单「重新接入桌面」、`--start`）即可接回；打开"画面意外断开时自动重新接入"后，意外断开时会自动接回。
 
 **诊断包。** 诊断 → **导出诊断包**（或 `ParaDesk.exe --diagbundle`）会生成一个 zip，包含日志、环境自检报告、`settings.json` 与 `state.json`；保存的登录凭据绝不会放进去，「登录后自动运行」的命令会被脱敏；但日志和路径里仍可能出现你的 Windows 用户名和目录名 —— zip 里的 `manifest.txt` 列出了每个文件，公开发帖前先看一眼。提交 issue 时附上它。

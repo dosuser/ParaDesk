@@ -501,20 +501,6 @@ namespace ParaDesk.Rdp
                 Try("allowBackgroundInput", delegate { adv.allowBackgroundInput = 0; });
             }
 
-            // 可选的已保存凭据。正常情况下子会话会用父会话身份自动登录，
-            // 只有在「允许委派默认凭据」策略也无法生效时（如仅 PIN 登录的账户）才需要。
-            if (CredentialStore.Exists)
-            {
-                string user, pwd;
-                if (CredentialStore.TryLoad(out user, out pwd))
-                {
-                    TryImportant("UserName", delegate { _ocx.UserName = user; });
-                    if (adv != null)
-                        TryImportant("ClearTextPassword", delegate { adv.ClearTextPassword = pwd; });
-                    Log.Info("已使用保存的凭据登录分身桌面");
-                }
-            }
-
             int hookMode = (int)(_profile.WindowMode == WindowMode.Fullscreen
                 ? RdpKeyboardHookMode.Remote
                 : RdpKeyboardHookMode.FullScreenOnly);
@@ -549,6 +535,39 @@ namespace ParaDesk.Rdp
             uint desktopScale, deviceScale;
             ResolveScale(out desktopScale, out deviceScale);
             SetScaleFactors(ext, desktopScale, deviceScale);
+
+            // 子会话和连接选项设置完成后，再应用用户显式保存的登录身份。
+            ApplySavedCredentials(adv);
+        }
+
+        private void ApplySavedCredentials(dynamic advancedSettings)
+        {
+            if (!CredentialStore.Exists) return;
+            string savedUser, password;
+            if (!CredentialStore.TryLoad(out savedUser, out password)) return;
+
+            // SID 相同并不意味着不同身份提供方的密码认证语义相同。
+            // 默认账户建议仅用于凭据对话框；已保存的账户选择必须被尊重。
+            RdpCredentialName name = RdpCredentialName.Parse(savedUser);
+            bool domainSet = TryImportant("Domain", delegate { _ocx.Domain = name.Domain; });
+            bool userSet = TryImportant("UserName", delegate { _ocx.UserName = name.UserName; });
+            bool passwordSet = advancedSettings != null &&
+                TryImportant("ClearTextPassword", delegate { advancedSettings.ClearTextPassword = password; });
+
+            if (domainSet && userSet && passwordSet)
+            {
+                Log.Info("已向 RDP 控件提交保存的凭据，等待身份验证结果");
+                // 只记录格式和一致性，不记录账户名或密码。
+                Try("CredentialIdentityReadBack", delegate
+                {
+                    bool matches = string.Equals((string)_ocx.Domain, name.Domain, StringComparison.Ordinal)
+                        && string.Equals((string)_ocx.UserName, name.UserName, StringComparison.Ordinal);
+                    Log.Debug("RDP 凭据身份格式：保留提供方限定名=" + name.ProviderQualified
+                        + "，账户属性回读一致=" + matches);
+                });
+            }
+            else
+                Log.Warn("保存的登录凭据未完整提交给 RDP 控件，无法确认自动登录设置已生效");
         }
 
         /// <summary>
@@ -706,7 +725,7 @@ namespace ParaDesk.Rdp
             _authWarningVisible = true;
             bool wasTop = TopMost;
             ApplyTopMost();
-            Log.Info("分身桌面弹出了认证警告（证书/身份确认）" + (wasTop ? "，暂时取消置顶以免挡住它" : ""));
+            Log.Info("分身桌面显示了身份验证对话框（凭据输入或服务器身份确认）" + (wasTop ? "，暂时取消置顶以免挡住它" : ""));
         }
 
         private void OnRdpAuthWarningDismissed(object sender, EventArgs e)
@@ -715,7 +734,7 @@ namespace ParaDesk.Rdp
             _authWarningVisible = false;
             _connectingSinceTick = _watchdogTicks;
             ApplyTopMost();
-            Log.Info("认证警告已关闭");
+            Log.Info("身份验证对话框已关闭");
         }
 
         /// <summary>集中管理覆盖提示文字，避免某条路径忘了收起它。</summary>
@@ -1164,10 +1183,10 @@ namespace ParaDesk.Rdp
             catch (Exception ex) { Log.Debug("可选设置 " + name + " 未生效: " + ex.Message); }
         }
 
-        private static void TryImportant(string name, Action a)
+        private static bool TryImportant(string name, Action a)
         {
-            try { a(); }
-            catch (Exception ex) { Log.Warn("设置 " + name + " 未生效: " + ex.Message); }
+            try { a(); return true; }
+            catch (Exception ex) { Log.Warn("设置 " + name + " 未生效: " + ex.Message); return false; }
         }
 
         private dynamic GetAdvanced()

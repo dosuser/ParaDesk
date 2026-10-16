@@ -6,8 +6,8 @@ using System.Text;
 namespace ParaDesk.Core
 {
     /// <summary>
-    /// 可选的凭据保存。仅在「允许委派默认凭据」策略也救不了的场景才需要
-    /// （典型是只用 PIN / Windows Hello 登录的账户，首次之后系统会强制要求账户密码）。
+    /// 可选的凭据保存，在当前登录身份无法自动委派时提供显式账户密码。
+    /// 保存成功只表示密文已写入；密码是否有效由 Windows 连接认证决定。
     ///
     /// 安全设计：
     /// - 用 DPAPI（CurrentUser 作用域）加密，密文只有**本机 + 本 Windows 账户**能解开，
@@ -93,16 +93,14 @@ namespace ParaDesk.Core
             catch (Exception ex) { Log.Error("清除凭据失败", ex); }
         }
 
-        /// <summary>默认用当前登录的 Windows 账户名，用户一般不需要自己填。</summary>
+        /// <summary>关联 Microsoft Account 时使用其登录身份，否则使用当前 Windows 账户名。</summary>
         public static string CurrentUserName
         {
             get
             {
                 try
                 {
-                    string domain = Environment.UserDomainName;
-                    string user = Environment.UserName;
-                    return string.IsNullOrEmpty(domain) ? user : domain + "\\" + user;
+                    return WindowsAccountIdentity.CurrentCredentialName;
                 }
                 catch { return Environment.UserName; }
             }
